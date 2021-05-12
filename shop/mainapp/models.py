@@ -1,10 +1,19 @@
+from PIL import Image
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-
 User = get_user_model()
+
+
+class MinResolutionErrorExeption(Exception):
+    pass
+
+
+class MaxResolutionErrorExeption(Exception):
+    pass
 
 
 class LatestProductsManager:
@@ -46,6 +55,10 @@ class Category(models.Model):
 
 class Product(models.Model):
 
+    MIN_RESOLUTION = (400, 400)
+    MAX_RESOLUTION = (800, 1300)
+    MAX_IMAGE_SIZE = 102400
+
     class Meta:
         abstract = True
 
@@ -58,6 +71,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        image = self.image
+        img = Image.open(image)
+        min_height, min_width = self.MIN_RESOLUTION
+        max_height, max_width = self.MAX_RESOLUTION
+        if img.width < min_width or img.height < min_height:
+            raise MinResolutionErrorExeption('Small image!')
+        if img.width > max_width or img.height > max_height:
+            raise MaxResolutionErrorExeption('Big image!')
+        super().save(*args, **kwargs)
+
 
 
 class Notebook(Product):

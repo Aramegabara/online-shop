@@ -1,31 +1,29 @@
-from django.forms import ModelChoiceField, ModelForm
+from PIL import Image
+from django.forms import ModelChoiceField, ModelForm, ValidationError
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from xdg.Exceptions import ValidationError
 from .models import *
-from PIL import Image
 
 class NoebookAdminForm(ModelForm):
-
-    MIN_RESOLUTION = (400, 400)
-    MAX_RESOLUTION = (800, 800)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].help_text = mark_safe(
             '''<span style="color:red; font-size:14px;">
                     Load image (min {}x{}, max{}x{})
-               </span>'''.format(*self.MIN_RESOLUTION, *self.MAX_RESOLUTION))
+               </span>'''.format(*Product.MIN_RESOLUTION, *Product.MAX_RESOLUTION))
 
     def clean_image(self):
-        image = self.clean_data['image']
+        image = self.cleaned_data['image']
         img = Image.open(image)
-        min_height, min_width = self.MIN_RESOLUTION
-        max_height, max_width = self.MAX_RESOLUTION
-        if img.width > max_width or img.height > max_height:
-            raise ValidationError('Big image!')
+        min_height, min_width = Product.MIN_RESOLUTION
+        max_height, max_width = Product.MAX_RESOLUTION
+        if image.size > Product.MAX_IMAGE_SIZE:
+            raise ValidationError(f'Size image biger than 100 kb! Img = {round(image.size * 0.00097656)} kb')
         if img.width < min_width or img.height < min_height:
-            raise ValidationError('Small image!')
+            raise ValidationError(f'Small image! {img.width}x{img.height}')
+        if img.width > max_width or img.height > max_height:
+            raise ValidationError(f'Big image! {img.width}x{img.height}')
         return image
 
 
