@@ -41,11 +41,33 @@ class Product(models.Model):
 
 
 class Notebook(Product):
-    pass
+
+    diagonal = models.CharField(max_length=90, verbose_name='Diagonal')
+    display_type = models.CharField(max_length=90, verbose_name='Display type')
+    processor_freq = models.CharField(max_length=90, verbose_name='Freq')
+    ram = models.CharField(max_length=90, verbose_name='Ram')
+    video = models.CharField(max_length=90, verbose_name='Video')
+    time_without_charge = models.CharField(max_length=90, verbose_name='Time working without harge')
+
+    def __str__(self):
+        return f'{self.category.name} : {self.title}'
 
 
 class Smartphones(Product):
-    pass
+    
+    diagonal = models.CharField(max_length=90, verbose_name='Diagonal')
+    display_type = models.CharField(max_length=90, verbose_name='Display type')
+    resolution = models.CharField(max_length=90, verbose_name='Resolution')
+    accum_volume = models.CharField(max_length=90, verbose_name='Accum')
+    ram = models.CharField(max_length=90, verbose_name='Ram')
+    sd = models.CharField(max_length=90, verbose_name='SD')
+    sd_max_volume = models.CharField(max_length=90, verbose_name='Max volume SD')
+    main_cam = models.CharField(max_length=90, verbose_name='Main camera')
+    front_cam = models.CharField(max_length=90, verbose_name='Fronta camera')
+
+
+    def __str__(self):
+        return f'{self.category.name} : {self.title}'
 
 
 class Tv(Product):
