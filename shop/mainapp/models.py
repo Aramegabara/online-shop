@@ -6,14 +6,34 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 User = get_user_model()
 
-# Models
-#1 Category
-#2 Product
-#3 CartProduct
-#4 Cart
-#5 Customer
-#6 Specification
-#7 Order
+
+class LatestProductsManager:
+
+    @staticmethod
+    def get_products_for_main_page(*args, **kwargs):
+        with_respect_to = kwargs.get('with_respect_to')
+        products = []
+        ct_models = ContentType.objects.filter(model__in=args)
+        for ct_model in ct_models:
+            model_products = ct_model.model_class()._base_manager.all().order_by('-id')[:5]
+            products.extend(model_products)
+        if with_respect_to:
+            ct_model = ContentType.objects.filter(model=with_respect_to)
+            if ct_model.exists():
+                if with_respect_to in args:
+                    return sorted(
+                        products,
+                        key=lambda x: x.__class__._meta.model_name.startswith(with_respect_to),
+                        reverse=True
+                    )
+        return products
+
+
+class LatestProducts:
+
+    objects = LatestProductsManager()
+
+
 
 class Category(models.Model):
 
@@ -60,7 +80,7 @@ class Smartphone(Product):
     resolution = models.CharField(max_length=90, verbose_name='Resolution')
     accum_volume = models.CharField(max_length=90, verbose_name='Accum')
     ram = models.CharField(max_length=90, verbose_name='Ram')
-    sd = models.CharField(max_length=90, verbose_name='SD')
+    sd = models.BooleanField(default=True)
     sd_max_volume = models.CharField(max_length=90, verbose_name='Max volume SD')
     main_cam = models.CharField(max_length=90, verbose_name='Main camera')
     front_cam = models.CharField(max_length=90, verbose_name='Fronta camera')
