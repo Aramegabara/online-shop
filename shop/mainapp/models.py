@@ -70,10 +70,6 @@ class Smartphone(Product):
         return f'{self.category.name} : {self.title}'
 
 
-class Tv(Product):
-    pass
-
-
 class CartProduct(models.Model):
 
     user = models.ForeignKey('Customer', verbose_name='Customer', on_delete=models.CASCADE)
