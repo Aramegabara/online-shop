@@ -53,7 +53,7 @@ class Notebook(Product):
         return f'{self.category.name} : {self.title}'
 
 
-class Smartphones(Product):
+class Smartphone(Product):
     
     diagonal = models.CharField(max_length=90, verbose_name='Diagonal')
     display_type = models.CharField(max_length=90, verbose_name='Display type')
