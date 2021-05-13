@@ -4,6 +4,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.urls import reverse
+
+
+def get_product_url(object, viewname ):
+    ct_model = object.__class__._meta.model_name
+    reverse(viewname, kwargs={'ct_model': ct_model, 'slug': object.slug})
+
 
 User = get_user_model()
 
@@ -84,7 +91,6 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
 
-
 class Notebook(Product):
 
     diagonal = models.CharField(max_length=90, verbose_name='Diagonal')
@@ -96,6 +102,9 @@ class Notebook(Product):
 
     def __str__(self):
         return f'{self.category.name} : {self.title}'
+
+    def get_absolute_url(self):
+        return get_product_url(self, 'prodct_detail')
 
 
 class Smartphone(Product):
@@ -110,9 +119,11 @@ class Smartphone(Product):
     main_cam = models.CharField(max_length=90, verbose_name='Main camera')
     front_cam = models.CharField(max_length=90, verbose_name='Fronta camera')
 
-
     def __str__(self):
         return f'{self.category.name} : {self.title}'
+
+    def get_absolute_url(self):
+        return get_product_url(self, 'prodct_detail')
 
 
 class CartProduct(models.Model):
