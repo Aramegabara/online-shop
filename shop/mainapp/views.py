@@ -5,7 +5,7 @@ from django.views.generic import DetailView
 
 
 def test_view(request):
-    return render(request, 'base.html', {})
+    return render(request, 'mainapp/base.html', {})
 
 
 class ProductDetailView(DetailView):
@@ -22,5 +22,5 @@ class ProductDetailView(DetailView):
 
 
     context_object_name = 'product'
-    template_name = 'product_detail.html'
+    template_name = 'mainapp/product_detail.html'
     slug_url_kwarg = 'slug'
