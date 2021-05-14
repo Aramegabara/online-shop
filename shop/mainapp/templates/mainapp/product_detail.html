@@ -15,9 +15,17 @@
 	</div>
 	<div class="col-md-8">
 		<h3>{{ product.title }}</h3>
-		<p>Price : {{ product.price }} zl</p>
-		<p>Description : {{ product.description }} .</p>
+		<p>Price: {{ product.price }} zl</p>
+		<p>Description: {{ product.description }} .</p>
 	</div>
+	<h3 class="mt-4">Specification:</h3>
+
+	{% if product.category.slug == 'notebooks' %}
+		{% include 'mainapp/notebook_specification.html' %}
+	{% else %}
+		{% include 'mainapp/smartphone_specification.html' %}
+	{% endif %}
+
 </div>
 
-{% endblock content%}
+{% endblock content %}
