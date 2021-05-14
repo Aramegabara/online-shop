@@ -7,9 +7,10 @@
 		<img src="{{ product.image.url }}" class="img-fluid">
 	</div>
 	<div class="col-md-8">
-
+		<h3>{{ product.title }}</h3>
+		<p>Price : {{ product.price }} zl</p>
+		<p>Description : {{ product.description }} .</p>
 	</div>
 </div>
-{{ product.title }}
 
 {% endblock content%}
