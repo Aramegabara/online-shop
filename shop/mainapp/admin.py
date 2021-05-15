@@ -4,7 +4,18 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import *
 
-class NoebookAdminForm(ModelForm):
+
+class SmartphoneAdminForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if not instance.sd:
+            self.fields['sd_max_volume'].widget.attrs.update({
+                'readonly':True, 'style': 'background: lightgray'
+            })
+
+class NotbookAdminForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,7 +40,7 @@ class NoebookAdminForm(ModelForm):
 
 class NotebookAdmin(admin.ModelAdmin):
 
-    form = NoebookAdminForm
+    form = NotbookAdminForm
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'category':
