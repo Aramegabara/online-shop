@@ -39,6 +39,9 @@ class NotebookAdmin(admin.ModelAdmin):
 
 class SmartphoneAdmin(admin.ModelAdmin):
 
+    change_form_template = 'mainapp/admin.html'
+
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'category':
             return ModelChoiceField(Category.objects.filter(slug='smartphones'))
