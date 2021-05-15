@@ -114,8 +114,10 @@ class Smartphone(Product):
     resolution = models.CharField(max_length=90, verbose_name='Resolution')
     accum_volume = models.CharField(max_length=90, verbose_name='Accum')
     ram = models.CharField(max_length=90, verbose_name='Ram')
-    sd = models.BooleanField(default=True)
-    sd_max_volume = models.CharField(max_length=90, verbose_name='Max volume SD')
+    sd = models.BooleanField(default=True, verbose_name='slot for SD')
+    sd_max_volume = models.CharField(
+        max_length=90, null=True, blank=True, verbose_name='Max volume SD'
+    )
     main_cam = models.CharField(max_length=90, verbose_name='Main camera')
     front_cam = models.CharField(max_length=90, verbose_name='Fronta camera')
 
