@@ -15,6 +15,12 @@ class SmartphoneAdminForm(ModelForm):
                 'readonly':True, 'style': 'background: lightgray'
             })
 
+    def clean(self):
+        if not self.cleaned_data['sd']:
+            self.cleaned_data['ad_max_volume'] = None
+        return self.cleaned_data
+
+
 class NotbookAdminForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
