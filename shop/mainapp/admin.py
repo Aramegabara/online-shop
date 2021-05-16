@@ -17,7 +17,7 @@ class SmartphoneAdminForm(ModelForm):
 
     def clean(self):
         if not self.cleaned_data['sd']:
-            self.cleaned_data['ad_max_volume'] = None
+            self.cleaned_data['sd_max_volume'] = None
         return self.cleaned_data
 
 
@@ -57,6 +57,7 @@ class NotebookAdmin(admin.ModelAdmin):
 class SmartphoneAdmin(admin.ModelAdmin):
 
     change_form_template = 'mainapp/admin.html'
+    form = SmartphoneAdminForm
 
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
