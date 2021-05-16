@@ -7,6 +7,10 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 
 
+def get_models_for_count(*model_names):
+    return [models.Count(model_name) for model_name in model_names]
+
+
 def get_product_url(object, viewname ):
     ct_model = object.__class__._meta.model_name
     reverse(viewname, kwargs={'ct_model': ct_model, 'slug': object.slug})
@@ -50,11 +54,27 @@ class LatestProducts:
     objects = LatestProductsManager()
 
 
+class CategoryManager(models.Manager):
+
+    CATEGORY_NAME_COUNT_NAME = {
+        'Notebooks': 'notebook__count',
+        'Smartphones': 'smartphone__count'
+    }
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get_categories_for_left_sidebar(self):
+        models = get_models_for_count('notebook', 'smartphone')
+        qs = list(self.get_queryset().annotate(*models).values())
+        return [dict(name=c['name'], slug=c['slug'], count=c[self.CATEGORY_NAME_COUNT_NAME[c['name']]]) for c in qs]
+
 
 class Category(models.Model):
 
     name = models.CharField(max_length=100, verbose_name='Category')
     slug = models.SlugField(unique=True)
+    objects = CategoryManager()
 
     def __str__(self):
         return self.name
