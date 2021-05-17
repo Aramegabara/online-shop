@@ -125,7 +125,7 @@ class Notebook(Product):
     processor_freq = models.CharField(max_length=90, verbose_name='Freq')
     ram = models.CharField(max_length=90, verbose_name='Ram')
     video = models.CharField(max_length=90, verbose_name='Video')
-    time_without_charge = models.CharField(max_length=90, verbose_name='Time working without harge')
+    time_without_charge = models.CharField(max_length=90, verbose_name='Time working without charge')
 
     def __str__(self):
         return f'{self.category.name} : {self.title}'
