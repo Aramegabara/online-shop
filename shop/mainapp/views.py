@@ -21,8 +21,8 @@ class BaseView(View):
 class ProductDetailView(CategoryDetailMixin, DetailView):
 
     CT_MODEL_MODEL_CLASS = {
-        'notebook': Notebook,
-        'smartphone': Smartphone
+        'notebooks': Notebook,
+        'smartphones': Smartphone
     }
 
     def dispatch(self, request, *args, **kwargs):
