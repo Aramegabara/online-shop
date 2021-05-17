@@ -131,7 +131,7 @@ class Notebook(Product):
         return f'{self.category.name} : {self.title}'
 
     def get_absolute_url(self):
-        return get_product_url(self, 'prodct_detail')
+        return get_product_url(self, 'product_detail')
 
 
 class Smartphone(Product):
@@ -152,7 +152,7 @@ class Smartphone(Product):
         return f'{self.category.name} : {self.title}'
 
     def get_absolute_url(self):
-        return get_product_url(self, 'prodct_detail')
+        return get_product_url(self, 'product_detail')
 
 
 class CartProduct(models.Model):
