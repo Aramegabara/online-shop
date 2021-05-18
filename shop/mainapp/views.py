@@ -10,6 +10,8 @@ from .mixins import CategoryDetailMixin
 class BaseView(View):
 
     def get(self, request, *args, **kwargs):
+        customer = Customer.objects.get(user=request.user)
+        cart = Cart.objects.get(owner=customer)
         categories = Category.objects.get_categories_for_left_sidebar()
         products = LatestProducts.objects.get_products_for_main_page(
             'notebook', 'smartphone'
@@ -17,6 +19,7 @@ class BaseView(View):
         context = {
             'categories': categories,
             'products': products,
+            'cart': cart
         }
         return render(request, 'mainapp/base.html', context)
 

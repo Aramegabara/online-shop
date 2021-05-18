@@ -28,7 +28,7 @@
                                 <span class="sr-only">OK</span>
                             </a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Basket <span class="badge badge-secondary bg-danger">0</span></a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Basket <span class="badge badge-secondary bg-danger">{{ cart.product.count }}</span></a></li>
                     </ul>
                 </div>
             </div>
