@@ -57,7 +57,6 @@ class AddToCartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
         ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
-        customer = Customer.objects.get(user=request.user)
         content_type = ContentType.objects.get(model=ct_model)
         product_in_cart = content_type.model_class().objects.get(slug=product_slug)
         cart_product, created = CartProduct.objects.get_or_create(
