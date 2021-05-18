@@ -166,7 +166,11 @@ class CartProduct(models.Model):
     sum_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Sum')
 
     def __str__(self):
-        return f'Product : {self.content_object.title} (in Cash)'
+        return f'Product : {self.content_object.title} (in Basket)'
+
+    def save(self, *args, **kwargs):
+        self.sum_price = self.quantity * self.content_object.price
+        super().save(*args, **kwargs)
 
 
 class Cart(models.Model):
