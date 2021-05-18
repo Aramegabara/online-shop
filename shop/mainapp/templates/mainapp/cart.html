@@ -12,6 +12,7 @@
       <th scope="col">Price</th>
       <th scope="col">Quantity</th>
       <th scope="col">Sum price</th>
+      <th scope="col">Action</th>
 
     </tr>
   </thead>
@@ -23,6 +24,10 @@
       <td>{{ item.content_object.price }} zl</td>
       <td>{{ item.quantity }}</td>
       <td>{{ item.sum_price }}</td>
+      <td>
+        <a href="{% url 'delete_from_cart' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}"><button class="btn btn-danger"
+      </td>
+
     </tr>
   {% endfor %}
     <tr>

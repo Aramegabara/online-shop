@@ -172,6 +172,9 @@ class CartProduct(models.Model):
         self.sum_price = self.quantity * self.content_object.price
         super().save(*args, **kwargs)
 
+    def get_model_name(self):
+        return self.__class__._meta.model_name
+
 
 class Cart(models.Model):
 
@@ -188,7 +191,6 @@ class Cart(models.Model):
 
     def save(self, *args, **kwargs):
         cart_data = self.product.aggregate(models.Sum('sum_price'), models.Count('id'))
-        print(cart_data)
         if cart_data.get('sum_price__sum'):
             self.sum_price = cart_data.get('sum_price__sum')
         else:
