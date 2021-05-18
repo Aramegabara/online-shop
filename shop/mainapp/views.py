@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, View
 
@@ -65,6 +66,7 @@ class AddToCartView(CartMixin, View):
         if created:
             self.cart.product.add(cart_product)
         self.cart.save()
+        messages.add_message(request, messages.INFO, "Product was added successfully")
         return  HttpResponseRedirect('/cart/')
 
 
@@ -80,13 +82,24 @@ class DeleteFromCartView(CartMixin, View):
         self.cart.product.remove(cart_product)
         cart_product.delete()
         self.cart.save()
+        messages.add_message(request, messages.INFO, "Product was deleted successfully")
         return  HttpResponseRedirect('/cart/')
 
 
 class ChangeQTYView(CartMixin, View):
 
-    def post(self, *args, **kwargs):
-        print(request.POST)
+    def post(self, request, *args, **kwargs):
+        ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
+        content_type = ContentType.objects.get(model=ct_model)
+        product_in_cart = content_type.model_class().objects.get(slug=product_slug)
+        cart_product = CartProduct.objects.get(
+            user=self.cart.owner, cart=self.cart, content_type=content_type, object_id=product_in_cart.id
+        )
+        quantity = int(request.POST.get('quantity'))
+        cart_product.quantity = quantity
+        cart_product.save()
+        self.cart.save()
+        messages.add_message(request, messages.INFO, "Quantity is changed successfully")
         return HttpResponseRedirect('/cart/')
 
 
