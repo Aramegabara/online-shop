@@ -186,6 +186,11 @@ class Cart(models.Model):
 
         return str(self.id)
 
+    def save(self, *args, **kwargs):
+        cart_data = self.product.aggregate(models.Sum('sum_price'), models.Count('id'))
+        print(cart_data)
+        super().save(*args, **kwargs)
+
 
 class Customer(models.Model):
 

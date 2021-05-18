@@ -30,6 +30,7 @@ class CartMixin(View):
                 cart = Cart.objects.create(for_anonymous_user=True)
                 return cart
         self.cart = cart
+        self.cart.save()
         return super().dispatch(request, *args, **kwargs)
 
 
