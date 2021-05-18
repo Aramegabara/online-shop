@@ -117,6 +117,9 @@ class Product(models.Model):
             raise MaxResolutionErrorExeption('Big image!')
         super().save(*args, **kwargs)
 
+    def get_model_name(self):
+        return self.__class__._meta.model_name
+
 
 class Notebook(Product):
 
@@ -171,9 +174,6 @@ class CartProduct(models.Model):
     def save(self, *args, **kwargs):
         self.sum_price = self.quantity * self.content_object.price
         super().save(*args, **kwargs)
-
-    def get_model_name(self):
-        return self.__class__._meta.model_name
 
 
 class Cart(models.Model):
