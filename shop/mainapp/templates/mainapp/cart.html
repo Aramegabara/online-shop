@@ -26,8 +26,8 @@
       <td>{{ item.sum_price }}</td>
       <td>
         <a href="{% url 'delete_from_cart' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}"><button class="btn btn-danger">Delete</button>
+        </a>
       </td>
-
     </tr>
   {% endfor %}
     <tr>
