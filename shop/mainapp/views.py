@@ -83,6 +83,11 @@ class DeleteFromCartView(CartMixin, View):
         return  HttpResponseRedirect('/cart/')
 
 
+class ChangeQTYView(CartMixin, View):
+
+    def post(self, *args, **kwargs):
+        print(request.POST)
+        return HttpResponseRedirect('/cart/')
 
 
 class CartView(CartMixin, View):
