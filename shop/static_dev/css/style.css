@@ -4,6 +4,14 @@
   text-shadow: 2px 2px rebeccapurple;
 }
 
+.title_name {
+  font-size: 23px;
+  color: lightseagreen;
+  text-shadow: 2px 2px rebeccapurple;
+  margin: 20px;
+  padding-right: 500px;
+}
+
 .list-group-item{
   font-size: 13px;
   color: white;
