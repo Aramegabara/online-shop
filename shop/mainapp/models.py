@@ -237,6 +237,7 @@ class Order(models.Model):
     first_name = models.CharField(max_length=90, verbose_name='Name')
     last_name = models.CharField(max_length=90, verbose_name='Last name')
     phone = models.CharField(max_length=20, verbose_name='Phone number')
+    cart = models.ForeignKey(Cart, verbose_name='Basket', on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name='Address', null=True, blank=True)
     status = models.CharField(
         max_length=100,
