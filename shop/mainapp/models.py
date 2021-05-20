@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
+from django.utils import timezone
 
 
 def get_models_for_count(*model_names):
@@ -204,7 +205,54 @@ class Customer(models.Model):
     user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, verbose_name='Phone', null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name='Address', null=True, blank=True)
+    orders = models.ManyToManyField('Order', verbose_name='Customer orders', related_name='related_customer')
 
     def __str__(self):
         return f"Customer : {self.user.first_name} {self.user.last_name}"
 
+
+class Order(models.Model):
+
+    STATUS_NEW = 'new'
+    STATUS_IN_PROGRESS = 'in_progress'
+    STATUS_READY = 'is_ready'
+    STATUS_COMPLETED = 'completed'
+
+    BUYING_TYPE_SELF = 'self'
+    BUYING_TYPE_DELIVERY = 'delivery'
+
+    STATUS_CHOICES = (
+        (STATUS_NEW, 'New order'),
+        (STATUS_IN_PROGRESS, 'Order in progress'),
+        (STATUS_READY, 'Order is ready'),
+        (STATUS_COMPLETED, 'Order completed')
+    )
+
+    BUYING_TYPE_CHOICES = (
+        (BUYING_TYPE_SELF, 'Self'),
+        (BUYING_TYPE_DELIVERY, 'Delivery')
+    )
+
+    customer = models.ForeignKey(Customer, verbose_name='Custumer',related_name='related_orders', on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=90, verbose_name='Name')
+    last_name = models.CharField(max_length=90, verbose_name='Last name')
+    phone = models.CharField(max_length=20, verbose_name='Phone number')
+    address = models.CharField(max_length=255, verbose_name='Address', null=True, blank=True)
+    status = models.CharField(
+        max_length=100,
+        verbose_name='Order status',
+        choices = STATUS_CHOICES,
+        default=STATUS_NEW
+    )
+    bying_type = models.CharField(
+        max_length=100,
+        verbose_name='Order Type',
+        choices=BUYING_TYPE_CHOICES,
+        default=BUYING_TYPE_SELF
+    )
+    comment = models.TextField(verbose_name='Comment', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True, verbose_name='Date created order')
+    order_data = models.DateField(verbose_name='Date get order', default=timezone.now)
+
+    def __str__(self):
+        return str(self.id)
