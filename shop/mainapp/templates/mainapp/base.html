@@ -41,6 +41,19 @@
                 <div>
                     <ul class="navbar-nav ml-auto">
 
+{% if messages %}
+
+    {% for message in messages %}
+
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Info message</strong> {{ message }}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+    {% endfor %}
+
+{% endif %}
+
                         {% if cart.product.count == 0  %}
 
                             <li class="nav-item">
