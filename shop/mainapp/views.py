@@ -128,4 +128,4 @@ class CheckoutView(CartMixin, View):
             'cart': self.cart,
             'categories': categories
         }
-        return render(request, 'mainapp/cart.html', context)
+        return render(request, 'mainapp/checkout.html', context)
