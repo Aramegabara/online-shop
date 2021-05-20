@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
@@ -7,6 +8,7 @@ from django.views.generic import DetailView, View
 from .models import Notebook, Smartphone, Category, LatestProducts, Customer, Cart, CartProduct
 from .mixins import CategoryDetailMixin, CartMixin
 from .forms import OrderForm
+from .utils import recalc_cart
 
 
 class BaseView(CartMixin, View):
@@ -72,7 +74,7 @@ class AddToCartView(CartMixin, View):
         )
         if created:
             self.cart.product.add(cart_product)
-        self.cart.save()
+        recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, "Product was added successfully")
         return  HttpResponseRedirect('/cart/')
 
@@ -88,7 +90,7 @@ class DeleteFromCartView(CartMixin, View):
         )
         self.cart.product.remove(cart_product)
         cart_product.delete()
-        self.cart.save()
+        recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, "Product was deleted successfully")
         return  HttpResponseRedirect('/cart/')
 
@@ -105,7 +107,7 @@ class ChangeQTYView(CartMixin, View):
         quantity = int(request.POST.get('quantity'))
         cart_product.quantity = quantity
         cart_product.save()
-        self.cart.save()
+        recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, "Quantity is changed successfully")
         return HttpResponseRedirect('/cart/')
 
@@ -136,11 +138,13 @@ class CheckoutView(CartMixin, View):
 
 class MakeOrderView(CartMixin, View):
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = OrderForm(request.POST or None)
         customer = Customer.objects.get(user=request.user)
         if form.is_valid():
             new_order = form.save(commit=False)
+            new_order.customer = customer
             new_order.first_name = form.cleaned_data['first_name']
             new_order.last_name = form.cleaned_data['last_name']
             new_order.phone = form.cleaned_data['phone']
@@ -150,9 +154,10 @@ class MakeOrderView(CartMixin, View):
             new_order.comment = form.cleaned_data['comment']
             new_order.save()
             self.cart.in_order = True
+            self.cart.save()
             new_order.cart = self.cart
             new_order.save()
             customer.orders.add(new_order)
-            messages.add_message(request, messages.INFO, "Thx's for order" )
+            messages.add_message(request, messages.INFO, "Thank You for Your Order" )
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/checkout/')
