@@ -244,7 +244,7 @@ class Order(models.Model):
         choices = STATUS_CHOICES,
         default=STATUS_NEW
     )
-    bying_type = models.CharField(
+    buying_type = models.CharField(
         max_length=100,
         verbose_name='Order Type',
         choices=BUYING_TYPE_CHOICES,
@@ -252,7 +252,7 @@ class Order(models.Model):
     )
     comment = models.TextField(verbose_name='Comment', null=True, blank=True)
     created_at = models.DateTimeField(auto_now=True, verbose_name='Date created order')
-    order_data = models.DateField(verbose_name='Date get order', default=timezone.now)
+    order_date = models.DateField(verbose_name='Date get order', default=timezone.now)
 
     def __str__(self):
         return str(self.id)

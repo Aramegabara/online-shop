@@ -65,3 +65,9 @@ h6.fade{
   transform: translateY(50px);
 
 }
+
+.button_confirm{
+  color: #006b1b;
+  width: 40px;
+
+}
