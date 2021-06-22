@@ -1,0 +1,31 @@
+{% extends 'mainapp/base.html' %}
+
+
+    {% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    <h1> Make Registration </h1>
+    <div class="">
+    {{ form.username }}
+    </div>
+    <div class="">
+    {{ form.first_name }}
+    </div>
+    <div class="">
+    {{ form.last_name }}
+    </div>
+    <div class="">
+    {{ form.email }}
+    </div>
+    <div class="">
+    {{ form.password }}
+    </div>
+    <div class="">
+    {{ form.password2 }}
+    </div>
+        <div class="">
+          <button class="" type="submit">Create accound</button>
+        </div>
+</form>
+    {% endblock %}
+
