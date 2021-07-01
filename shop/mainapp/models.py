@@ -1,8 +1,8 @@
-from PIL import Image
+# from PIL import Image
 
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.models import ContentType
 # from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 from django.utils import timezone
@@ -79,7 +79,7 @@ class Category(models.Model):
 
     name = models.CharField(max_length=100, verbose_name='Category')
     slug = models.SlugField(unique=True)
-    objects = CategoryManager()
+    # objects = CategoryManager()
 
     def __str__(self):
         return self.name
@@ -165,8 +165,8 @@ class CartProduct(models.Model):
     cart = models.ForeignKey('Cart', verbose_name='Cart', on_delete=models.CASCADE, related_name='related_product')
     # content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='Product', on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    # object_id = models.PositiveIntegerField()
+    # content_object = GenericForeignKey('content_type', 'object_id')
     quantity = models.PositiveIntegerField(default=1)
     sum_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Sum')
 
