@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth import get_user_model
-# from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.models import ContentType
 # from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 from django.utils import timezone
@@ -90,9 +90,9 @@ class Category(models.Model):
 
 class Product(models.Model):
 
-    MIN_RESOLUTION = (400, 400)
-    MAX_RESOLUTION = (800, 1300)
-    MAX_IMAGE_SIZE = 102400
+    # MIN_RESOLUTION = (400, 400)
+    # MAX_RESOLUTION = (800, 1300)
+    # MAX_IMAGE_SIZE = 102400
 
     # class Meta:
     #     abstract = True
@@ -119,7 +119,10 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def get_model_name(self):
-        return self.__class__._meta.model_name
+        return self.__class__._meta.model_name.lower()
+
+    def get_absolute_url(self):
+        return reverse('product_detail', kwargs={'slug':self.slug})
 
 #
 # class Notebook(Product):
