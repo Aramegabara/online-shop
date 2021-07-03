@@ -1,0 +1,45 @@
+{% extends 'mainapp/base.html' %}
+
+
+    {% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <h1> Make Registration </h1>
+    <div class="">
+    {{ form.username.label }}
+        {{ form.username }}
+    </div>
+    <div class="">
+    {{ form.first_name.label }}
+        {{ form.first_name }}
+    </div>
+    <div class="">
+    {{ form.last_name.label }}
+        {{ form.last_name }}
+    </div>
+    <div class="">
+    {{ form.email.label }}
+        {{ form.email }}
+    </div>
+        <div class="">
+    {{ form.phone.label }}
+        {{ form.phone }}
+    </div>
+    <div class="">
+    {{ form.address.label }}
+        {{ form.address }}
+    </div>
+        <div class="">
+    {{ form.password.label }}
+        {{ form.password }}
+    </div>
+    <div class="">
+    {{ form.confirm_password.label }}
+        {{ form.confirm_password }}
+    </div>
+        <div class="">
+          <button class="" type="submit">Create accound</button>
+        </div>
+</form>
+    {% endblock %}
+
