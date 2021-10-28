@@ -1,0 +1,73 @@
+.shop_name {
+  font-size: 30px;
+  color: lightseagreen;
+  text-shadow: 2px 2px rebeccapurple;
+}
+
+.title_name {
+  font-size: 23px;
+  color: lightseagreen;
+  text-shadow: 2px 2px rebeccapurple;
+  margin: 20px;
+  padding-right: 500px;
+}
+
+.list-group-item{
+  font-size: 13px;
+  color: white;
+  background: rgb(27,158,87);
+  background: linear-gradient(0deg, rgba(64,89,75,1) 0%, rgb(16, 17, 36) 77%, rgba(145,153,163,1) 100%);
+  size: auto;
+}
+
+body {
+
+  background: rgb(37, 38, 42);
+  background: linear-gradient(153deg, rgba(37,38,42,1) 0%, rgba(201,190,213,1) 21%, rgba(239,237,238,1) 46%, rgba(246,246,243,1) 67%, rgba(246,246,243,1) 70%, rgba(172,172,172,1) 75%, rgba(191,17,17,1) 80%, rgba(27,28,32,1) 90%, rgba(23,25,29,1) 98%);
+}
+
+footer, article {
+  font-family: monospace;
+  position: absolute;
+  width: 100%;
+  color: white;
+  font-size: 15px;
+  text-shadow: 1px 1px 1px red;
+  background: rgba(255,255,255,0.4);
+}
+
+footer a{
+  color: red;
+}
+
+article {
+  top: 10px;
+  z-index: 100;
+  width: 50%;
+  max-width: 350px;
+  font-size: 15px;
+  color: green;
+  padding: 20px;
+  border-radius: 0 0 5px 0;
+}
+
+h6{
+  color: lightblue;
+  text-shadow: 2px 2px darkgreen;
+  font-size: 30px;
+  transition: all 0.2s ease;
+  transform: translateY(0px);
+  display: inline-block;
+}
+
+h6.fade{
+  opacity: 0;
+  transform: translateY(50px);
+
+}
+
+.button_confirm{
+  color: #006b1b;
+  width: 40px;
+
+}
