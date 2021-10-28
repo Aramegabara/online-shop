@@ -1,0 +1,71 @@
+{% extends 'app_shop/base.html' %}
+
+{% block content %}
+
+<h3 class="text-center mt-5 mb-5">
+  Your basked
+
+  {% if not cart.product.count %}
+
+  <sub>product is empty.</sub>
+
+  {% endif %}</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">image</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Sum price</th>
+      <th scope="col">Action</th>
+
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for item in cart.product.all %}
+
+    <tr>
+      <th scope="row">{{ item.content_object.title }}</th>
+      <td class="w-25 p-3"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
+      <td>{{ item.content_object.price }} zł</td>
+      <td>
+        <form action="{% url 'change_qty' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="number" style="width: 70px;" min="1" name="quantity" value="{{ item.quantity }}">
+          <br>
+          <br>
+          <input type="submit" class="btn btn-outline-primary" value="Change quantity">
+        </form>
+      </td>
+      <td>{{ item.sum_price }}</td>
+      <td>
+        <a href="{% url 'delete_from_cart' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}">
+          <button class="btn btn-danger ">Delete
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+          </button>
+        </a>
+      </td>
+    </tr>
+
+  {% endfor %}
+
+  {% if cart.product.count %}
+    <tr>
+      <td colspan="2"></td>
+      <td>Sumarry</td>
+<!--      <td>{{ cart.total_products }}</td>-->
+      <td></td>
+      <td style="color: #81d4fa"><strong>{{ cart.sum_price }} zł.</strong></td>
+      <td><a href="{% url 'checkout' %}"><button class="btn btn-outline-warning">Confirm</button></a></td>
+    </tr>
+  {% endif %}
+  </tbody>
+</table>
+
+{% endblock content %}

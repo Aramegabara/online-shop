@@ -1,0 +1,47 @@
+{% extends 'app_shop/base.html' %}
+
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="row" style="margin-bottom: 300px; margin-top:180px">
+        <h1>Registration </h1>
+        <th>
+            {{ form.username.label }}
+            {{ form.username }}
+        </th>
+        <th>
+            {{ form.first_name.label }}
+            {{ form.first_name }}
+        </th>
+        <th>
+            {{ form.last_name.label }}
+            {{ form.last_name }}
+        </th>
+        <th>
+            {{ form.email.label }}
+            {{ form.email }}
+        </th>
+        <th>
+            {{ form.phone.label }}
+            {{ form.phone }}
+        </th>
+        <th>
+            {{ form.address.label }}
+            {{ form.address }}
+        </th>
+        <th>
+            {{ form.password.label }}
+            {{ form.password }}
+        </th>
+        <th>
+            {{ form.confirm_password.label }}
+            {{ form.confirm_password }}
+        </th>
+        <th>
+            <button class="btn btn-success" type="submit">Create accound</button>
+        </th>
+    </div>
+</form>
+{% endblock %}
+
