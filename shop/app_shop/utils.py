@@ -2,6 +2,7 @@ from django.db import models
 
 
 def recalc_cart(cart):
+    '''Sum of products and they count'''
     cart_data = cart.product.aggregate(models.Sum('sum_price'), models.Count('id'))
     if cart_data.get('sum_price__sum'):
         cart.sum_price = cart_data.get('sum_price__sum')

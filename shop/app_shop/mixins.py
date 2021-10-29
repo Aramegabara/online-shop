@@ -1,11 +1,10 @@
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
 
-from .models import  Category, Cart, Customer, Notebook, Smartphone
+from .models import Category, Cart, Customer, Notebook, Smartphone
 
 
 class CategoryDetailMixin(SingleObjectMixin):
-
     CATEGORY_SLUG_PRODUCT_MODEL = {
         'notebooks': Notebook,
         'smartphones': Smartphone

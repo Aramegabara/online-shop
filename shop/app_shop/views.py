@@ -11,9 +11,10 @@ from .mixins import CategoryDetailMixin, CartMixin
 from .forms import OrderForm, LoginForm, RegistrationForm
 from .utils import recalc_cart
 
+tries = 0
+
 
 class BaseView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         categories = Category.objects.get_categories_for_left_sidebar()
         products = LatestProducts.objects.get_products_for_main_page(
@@ -28,7 +29,6 @@ class BaseView(CartMixin, View):
 
 
 class ProductDetailView(CartMixin, CategoryDetailMixin, DetailView):
-
     CT_MODEL_MODEL_CLASS = {
         'notebooks': Notebook,
         'smartphones': Smartphone
@@ -51,7 +51,6 @@ class ProductDetailView(CartMixin, CategoryDetailMixin, DetailView):
 
 
 class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
-
     model = Category
     queryset = Category.objects.all()
     context_object_name = 'category'
@@ -65,7 +64,6 @@ class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
 
 
 class AddToCartView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
         content_type = ContentType.objects.get(model=ct_model)
@@ -77,11 +75,10 @@ class AddToCartView(CartMixin, View):
             self.cart.product.add(cart_product)
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, "Product was added successfully")
-        return  HttpResponseRedirect('/cart/')
+        return HttpResponseRedirect('/cart/')
 
 
 class DeleteFromCartView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
         content_type = ContentType.objects.get(model=ct_model)
@@ -93,11 +90,10 @@ class DeleteFromCartView(CartMixin, View):
         cart_product.delete()
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, "Product was deleted successfully")
-        return  HttpResponseRedirect('/cart/')
+        return HttpResponseRedirect('/cart/')
 
 
 class ChangeQTYView(CartMixin, View):
-
     def post(self, request, *args, **kwargs):
         ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
         content_type = ContentType.objects.get(model=ct_model)
@@ -114,7 +110,6 @@ class ChangeQTYView(CartMixin, View):
 
 
 class CartView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         categories = Category.objects.get_categories_for_left_sidebar()
         context = {
@@ -125,7 +120,6 @@ class CartView(CartMixin, View):
 
 
 class CheckoutView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         categories = Category.objects.get_categories_for_left_sidebar()
         form = OrderForm(request.POST or None)
@@ -138,7 +132,6 @@ class CheckoutView(CartMixin, View):
 
 
 class MakeOrderView(CartMixin, View):
-
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = OrderForm(request.POST or None)
@@ -159,7 +152,7 @@ class MakeOrderView(CartMixin, View):
             new_order.cart = self.cart
             new_order.save()
             customer.orders.add(new_order)
-            messages.add_message(request, messages.INFO, "Thank You for Your Order" )
+            messages.add_message(request, messages.INFO, "Thank You for Your Order")
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/checkout/')
 
@@ -176,11 +169,10 @@ class MakeRegisterView(View):
             return redirect('/login')
         else:
             error = 'Uncorrect password!'
-            return(request, 'app_shop/registration.html', {'form': myFormRegistration, 'error': error})
+            return (request, 'app_shop/registration.html', {'form': myFormRegistration, 'error': error})
 
 
 class LoginView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         form = LoginForm(request.POST or None)
         categories = Category.objects.all()
@@ -188,6 +180,7 @@ class LoginView(CartMixin, View):
         return render(request, 'app_shop/login.html', context)
 
     def post(self, request, *args, **kwargs):
+        global tries
         form = LoginForm(request.POST or None)
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -196,17 +189,22 @@ class LoginView(CartMixin, View):
             if user:
                 login(request, user)
                 return HttpResponseRedirect('/')
+        else:
+            tries += 1
+            if tries >= 2:
+                messages.add_message(request, messages.INFO, "For testing this aplication enter : Login: Test, Password: p4ssword")
+                tries = 0
             else:
-                return HttpResponseRedirect('/login')
+                messages.add_message(request, messages.INFO, "Uncorrect Username or Password")
+            return HttpResponseRedirect('/login')
 
 
 class RegistrationView(CartMixin, View):
-
     def get(self, request, *args, **kwargs):
         form = RegistrationForm(request.POST or None)
         categories = Category.objects.all()
         ctx = {'form': form, 'categories': categories, 'cart': self.cart}
-        return render(request, 'app_shop/registration.html', ctx )
+        return render(request, 'app_shop/registration.html', ctx)
 
     def post(self, request, *args, **kwargs):
         form = RegistrationForm(request.POST or None)
@@ -228,4 +226,5 @@ class RegistrationView(CartMixin, View):
             login(request, user)
             return HttpResponseRedirect('/')
         else:
+            messages.add_message(request, messages.INFO, "Password is too short")
             return HttpResponseRedirect('/registration')

@@ -5,7 +5,6 @@ from .models import Order, User
 
 
 class OrderForm(forms.ModelForm):
-
     order_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
 
     class Meta:
@@ -22,7 +21,6 @@ class OrderForm(forms.ModelForm):
 
 
 class LoginForm(forms.ModelForm):
-
     password = forms.CharField(widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
@@ -47,7 +45,6 @@ class LoginForm(forms.ModelForm):
 
 
 class RegistrationForm(forms.ModelForm):
-
     confirm_password = forms.CharField(widget=forms.PasswordInput)
     password = forms.CharField(widget=forms.PasswordInput)
     phone = forms.CharField(required=False)
