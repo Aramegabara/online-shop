@@ -2,6 +2,37 @@
 
 {% block content %}
 
+<script>
+function updateCartTotal() {
+    let total = 0;
+    const rows = document.querySelectorAll('tbody tr:not(:last-child)');
+    
+    rows.forEach(row => {
+        const priceText = row.querySelector('td:nth-child(3)').textContent;
+        const price = parseFloat(priceText.replace(' zł', '').trim());
+        const quantity = parseInt(row.querySelector('input[name="quantity"]').value) || 1;
+        const itemTotal = price * quantity;
+        
+        // Update item sum price
+        row.querySelector('td:nth-child(5)').textContent = itemTotal.toFixed(2);
+        total += itemTotal;
+    });
+    
+    // Update summary total
+    const summaryRow = document.querySelector('tbody tr:last-child td:nth-child(5) strong');
+    if (summaryRow) {
+        summaryRow.textContent = total.toFixed(2) + ' zł.';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInputs = document.querySelectorAll('input[name="quantity"]');
+    quantityInputs.forEach(input => {
+        input.addEventListener('input', updateCartTotal);
+    });
+});
+</script>
+
 <div class="text-center mt-5 mb-5">
     <h1>BASKET</h1>
 

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, View
+from django.core.paginator import Paginator
 
 from .models import Notebook, Smartphone, Category, LatestProducts, Customer, Cart, CartProduct
 from .mixins import CategoryDetailMixin, CartMixin
@@ -20,9 +21,15 @@ class BaseView(CartMixin, View):
         products = LatestProducts.objects.get_products_for_main_page(
             'notebook', 'smartphone'
         )
+        
+        paginator = Paginator(products, 3)  # 3 товара на странице
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
         context = {
             'categories': categories,
-            'products': products,
+            'products': page_obj,
+            'page_obj': page_obj,
             'cart': self.cart
         }
         return render(request, 'app_shop/base.html', context)

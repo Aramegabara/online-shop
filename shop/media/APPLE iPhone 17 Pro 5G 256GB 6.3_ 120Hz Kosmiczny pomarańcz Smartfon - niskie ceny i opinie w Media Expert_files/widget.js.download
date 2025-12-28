@@ -1,0 +1,1585 @@
+﻿const clObserver = new MutationObserver((mutations) => {
+    mutations.forEach(() => {
+        addClearButton(); // Sprawdzamy i dodajemy przycisk
+    });
+});
+
+let clNewVersion = false;
+let clMulti = false;
+let clMultiType = "";
+let clMultiPhoneNumber = '756 756 742';
+let clMultiText = 'Potrzebujesz pomocy?'
+let clWorkHoursConfig = {
+	  weekday: {        // pon–pt
+		days: [1, 2, 3, 4, 5],
+		open: "08:00",
+		close: "20:00",
+	  },
+	  saturday: {
+		days: [6],
+		open: "10:00",
+		close: "18:00",
+	  },
+	  sunday: {
+		days: [0],
+		open: null,     // null = zamknięte
+		close: null,
+	  }
+	};
+
+function checkElement() {
+    return document.getElementById('section_menu-mobile');
+}
+
+function isIOSWebkit() {
+    const ua = navigator.userAgent.toLowerCase();
+    return /(iphone|ipad|ipod)/.test(ua) && /webkit/.test(ua) && !/crios|fxios/.test(ua);
+}
+
+const menuObserver = new MutationObserver((mutations) => {
+    mutations.forEach(() => {
+        const element = checkElement();
+        if (isIOSWebkit() && element && !menuObserver.elementVisible) {
+            document.getElementById("help-bubble").style.display = "none"
+            document.getElementById("expert-help-bubble").style.display = "none"
+            menuObserver.elementVisible = true;
+        } else if (isIOSWebkit && !element && menuObserver.elementVisible) {
+            document.getElementById("help-bubble").style.display = "block"
+			document.getElementById("expert-help-bubble").style.display = "block"
+            menuObserver.elementVisible = false;
+        }
+    });
+});
+
+menuObserver.elementVisible = !!checkElement();
+
+!function () {
+    clNewVersion = true;
+	
+	let cRuleUrl = window.location.href.toLowerCase();
+	const productCategory = document.querySelector('meta[property="product:category"]') ? document.querySelector('meta[property="product:category"]').content : null;
+	const productBrand = document.querySelector('meta[property="product:brand"]') ? document.querySelector('meta[property="product:category"]').content : null;
+
+    const params = new URL(cRuleUrl, typeof window !== 'undefined' ? window.location.href : undefined).searchParams;
+
+	
+
+
+	if (params.toString().length > 0) {
+		if (!params.has('query')) {
+			cRuleUrl = cRuleUrl.split('?')[0];
+		}
+	}	
+	  
+	if((cRuleUrl.includes('electrolux') || cRuleUrl.includes('aeg') ) && !cRuleUrl.includes('gbraid') && !cRuleUrl.includes('fbclid') && !cRuleUrl.includes('msockid') && !cRuleUrl.includes('utm_source')){
+		clMultiPhoneNumber = '756 756 755';
+		clMultiType = 'Electrolux-AGD'
+		clMulti = true;
+		
+		clWorkHoursConfig.sunday.open = "10:00";
+		clWorkHoursConfig.sunday.close = "18:00";
+	}
+	
+	if(cRuleUrl.includes("karcher")){
+		clMulti = true;
+		clMultiType = 'karcher';
+		clMultiPhoneNumber = '756 756 747'
+		
+		clWorkHoursConfig.saturday.open = null;
+		clWorkHoursConfig.saturday.close = null;
+	}
+	
+	if(cRuleUrl.includes("dyson")){
+		clMulti = true;
+		clMultiType = 'dyson';
+		clMultiPhoneNumber = '756 756 752'
+	}
+	
+	if(cRuleUrl.includes("https://www.mediaexpert.pl/agd-do-zabudowy/ekspresy-do-zabudowy")||
+	cRuleUrl.includes('https://www.mediaexpert.pl/agd-male/ekspresy-i-kawa/ekspresy-na-kapsulki')||
+	cRuleUrl.includes('https://www.mediaexpert.pl/outlet/outlet-agd-male/outlet-mlynki-do-kawy')||
+	productCategory?.toLowerCase().includes('ekspresy')){
+		clMulti = true;
+		clMultiType = 'Ekspresy';
+		clMultiPhoneNumber = '756 756 740';
+		clMultiText = 'Szukasz ekspresu do kawy?';
+		
+	}
+	
+	if(cRuleUrl.includes("https://www.mediaexpert.pl/agd-male/do-domu/klimatyzatory-scienne")||
+	cRuleUrl.includes('https://www.mediaexpert.pl/agd-male/klimatyzacja-i-chlodzenie/pompy-ciepla-powietrze-powietrze')||
+	cRuleUrl.includes('https://www.mediaexpert.pl/agd-male/do-domu/klimatyzatory-scienne/produkt-z-montazem_nie')||
+	cRuleUrl.includes('https://www.mediaexpert.pl/agd-male/do-domu/klimatyzatory-scienne/produkt-z-montazem_tak')){
+		clMulti = true;
+		clMultiType = 'klimatyzatory-split';
+		clMultiPhoneNumber = '756 756 741';
+		clMultiText = 'Szukasz klimatyzatora?';
+		
+		clWorkHoursConfig.saturday.open = null;
+		clWorkHoursConfig.saturday.close = null;
+	}
+	
+	var itRules = [
+	  { key: "smartfony-i-zegarki", text: "" },
+	  { key: "komputery-i-tablety", text: "" },
+	  { key: "smatrfony-i-telefony", text: "" },
+	]
+	
+	for (const itRule of itRules) {
+	  if (cRuleUrl.includes(itRule.key)) {
+		clMulti = true;
+		clMultiType = 'it';
+		clMultiPhoneNumber = '756 756 742';
+		break;
+	  }
+	}
+	
+	if(cRuleUrl.includes("apple")){
+		clMulti = true;
+		clMultiType = 'apple';
+		clMultiPhoneNumber = '756 756 754'
+	}
+	
+	var rtvRules = [
+	  { key: "telewizory-i-rtv", text: "" },
+	]
+	
+	for (const rtvRule of rtvRules) {
+	  if (cRuleUrl.includes(rtvRule.key)) {
+		clMulti = true;
+		  if(cRuleUrl.includes('philips')){
+			clMultiPhoneNumber = '756 756 743';
+			clMultiType = 'philips-rtv';
+			
+			clWorkHoursConfig.sunday.open = "10:00";
+			clWorkHoursConfig.sunday.close = "18:00";
+			
+		  }else{
+			clMultiType = 'rtv';
+			clMultiPhoneNumber = '756 756 745';
+		  }
+		break;
+	  }
+	}
+	
+	var agdRules = [
+	  { key: "lodowki", text: "Szukasz lodówki?" },
+	  { key: "lodowki-i-zamrazarki-do-zabudowy", text: "Szukasz lodówki do zabudowy?" },
+	  { key: "witryny-chlodnicze", text: "Szukasz witryny?" },
+	  { key: "pralki", text: "Szukasz pralki?" },
+	  { key: "szafy-parowe", text: "Szukasz szafy parowej?" },
+	  { key: "kuchnie", text: "Szukasz kuchnie?" },
+	  { key: "zmywarki", text: "Szukasz zmywarki?" },
+	  { key: "piekarnik", text: "Szukasz piekarnika?" },
+	  { key: "okap", text: "Szukasz okap?" }
+	];
+	for (const agdRule of agdRules) {
+	  if (cRuleUrl.includes(agdRule.key) && !cRuleUrl.includes('electrolux') && !cRuleUrl.includes('aeg')) {
+		clMulti = true;
+		clMultiType = 'agd';
+		clMultiPhoneNumber = '756 756 757';
+		clMultiText = agdRule.text;
+		break;
+	  }
+	}
+	
+
+
+	var audioRules = [
+		{key: 'glosniki', text: "Szukasz głośnika?"},
+		{key: 'systemy-multiroom', text: "Szukasz głośnika?"},
+		{key: 'power-audio', text: "Szukasz urządzenia audio?"},
+		{key: 'kina-domowego', text: "Szukasz kina domowego?"},
+		{key: 'amplitunery', text: "Szukasz amplitunera?"},
+		{key: 'kolumny', text: "Szukasz zestawu kolumn?"},
+		{key: 'subwoofery', text: "Szukasz subwoofera?"},
+		{key: 'audio-video', text: "Szukasz akcesoriów audio-video?"},
+		{key: 'wieze', text: "Szukasz wieży?"},
+		{key: 'gramofony', text: "Szukasz gramofonu?"},
+		{key: 'wzmacniacze', text: "Szukasz wzmacniacza?"},
+		{key: 'zestawy-stereo', text: "Szukasz zestawu stereo?"},
+		{key: 'odtwarzacze-cd', text: "Szukasz odtwarzacza CD?"},
+		{key: 'tunery', text: "Szukasz tunera?"},
+		{key: 'mikrofony', text: "Szukasz mikrofonu?"},
+		{key: 'sluchawki', text: "Szukasz słuchawek?"},
+	]
+	for (const audioRule of audioRules) {
+	  if (cRuleUrl.includes(audioRule.key)) {
+		clMulti = true;
+		clMultiType = 'audio';
+		clMultiPhoneNumber = '756 756 744';
+		clMultiText = audioRule.text;
+		break;
+	  }
+	}
+	
+	if(!isShopOpen(clWorkHoursConfig)){
+		clMulti = false;
+	}
+	
+	
+    clObserver.observe(document.body, { childList: true, subtree: true });
+
+    menuObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    function isMobile() {
+        return window.innerWidth <= 720 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    let pathName = window.location.pathname;
+    if (isMobile() && (pathName.includes("koszyk") || pathName.includes("/odbierz-paczke/"))) {
+        return;
+    }
+
+    var url;
+    var _opts = JSON.parse(document.getElementById("preview-widget").getAttribute("opts"))
+    var scripts = document.getElementsByTagName('script');
+    for (var i in scripts) {
+        if (scripts[i].src.indexOf("widget.js") > -1) {
+            url = scripts[i].src;
+            url = url.split('?')[0];
+            url = url.toLowerCase().replace("widget/widget.js", "");
+            break;
+        }
+    }
+    var t = "undefined" != typeof _opts ? _opts : {}
+        , t = function () {
+
+            if (!_opts.url) _opts.url = url;
+
+            if (_opts.mediaType) {
+                switch (_opts.mediaType.toLowerCase()) {
+                    case "audio":
+                        _opts.url = _opts.url + "audio.aspx";
+                        break;
+                    case "video":
+                        _opts.url = _opts.url + "video.aspx";
+                        break;
+                    case "chat":
+                        _opts.url = _opts.url + "chat.aspx";
+                        break;
+                }
+            }
+
+            var language = 'pl';
+
+            if (_opts.custLang || _opts.language) {
+                language = _opts.custLang ? _opts.custLang : _opts.language;
+            }
+
+            if (_opts.instance) {
+
+                if (window.location.href.includes("mad-dog")) {
+                    _opts.service = "MEPL-ExpertSpecIT";
+                }
+
+                _opts.url = _opts.url + "?onecontactinstance=" + _opts.instance;
+
+                if (_opts.mediaType != "" && _opts.service) _opts.url = _opts.url + "&motive=" + _opts.service
+                if (_opts.custName) _opts.url = _opts.url + "&name=" + _opts.custName;
+                if (_opts.custPhoneNumber) _opts.url = _opts.url + "&phoneNumber=" + _opts.custPhoneNumber;
+                if (_opts.custEmail) _opts.url = _opts.url + "&email=" + _opts.custEmail;
+                if (_opts.custQuestion) _opts.url = _opts.url + "&question=" + _opts.custQuestion;
+				if (clNewVersion) _opts.url = _opts.url + "&clNewVersion=true"
+
+                _opts.url = _opts.url + "&lang=" + language;
+            }
+
+            for (var t = 1; t < arguments.length; t++)
+                for (var e in arguments[t])
+                    arguments[t].hasOwnProperty(e) && (arguments[0][e] = arguments[t][e]);
+            return arguments[0]
+        }({}, {
+            "bodyBackground": "#F7F7F7",
+            "headerBackground": "#1eaedb",
+            "headerTitle": "Have questions about our website?",
+            "headerColor": "#FFF",
+            "url": url
+        }, t);
+    !function () {
+        var e = document.createElement("style");
+e.innerHTML = [
+  ".animated{-webkit-animation-duration:2s;animation-duration:2s;-webkit-animation-fill-mode:both;animation-fill-mode:both}",
+  ".animated.infinite{-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite}",
+  "@-webkit-keyframes bounceInUp{0%,60%,75%,90%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{opacity:0;-webkit-transform:translate3d(0,3000px,0);transform:translate3d(0,3000px,0)}60%{opacity:1;-webkit-transform:translate3d(0,-20px,0);transform:translate3d(0,-20px,0)}75%{-webkit-transform:translate3d(0,10px,0);transform:translate3d(0,10px,0)}90%{-webkit-transform:translate3d(0,-5px,0);transform:translate3d(0,-5px,0)}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}",
+  "@keyframes bounceInUp{0%,60%,75%,90%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{opacity:0;-webkit-transform:translate3d(0,3000px,0);transform:translate3d(0,3000px,0)}60%{opacity:1;-webkit-transform:translate3d(0,-20px,0);transform:translate3d(0,-20px,0)}75%{-webkit-transform:translate3d(0,10px,0);transform:translate3d(0,10px,0)}90%{-webkit-transform:translate3d(0,-5px,0);transform:translate3d(0,-5px,0)}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}",
+  ".bounceInUp{-webkit-animation-name:bounceInUp;animation-name:bounceInUp}",
+
+  ".chevron.right:before{left:0;transform:rotate(45deg);}",
+  ".chevron.bottom:before{top:-3px;transform:rotate(135deg);}",
+  ".chevron.left:before{left:0.25em;transform:rotate(-135deg);}",
+  ".chevron{    cursor: pointer; border: none; background: transparent; font-size: 15px; order: 4; color: rgb(243, 230, 0); font-weight: bold; margin-left: 5px;}",
+    ".chevron:hover{ decoration:none !important;}",
+  ".chevron.top{margin-top:4px;}",
+  ".chevron.bottom{margin-top:5px;}",
+  ".chevron:hover{color:#333!important;}",
+  "#o3c_box{margin:0px 20px;bottom:20px;left:0px;position:fixed;width:356px;z-index:4000;}",
+  "/* Mobile styles - full screen widget */",
+  "@media (max-width: 680px) {",
+  "  body.lock-scroll {",
+  "    height: 100% !important;",
+  "    overflow: hidden !important;",
+  "  }",
+  "  #o3c_box {",
+  "    margin: 0 !important;",
+  "    bottom: 0 !important;",
+  "    right: 0 !important;",
+  "    left: 0 !important;",
+  "    top: 0 !important;",
+  "    width: 100% !important;",
+  "    height: 100% !important;",
+  "    border-radius: 0 !important;",
+  "  }",
+  "  #o3c_box .o3c_header {",
+  "    border-radius: 0 !important;",
+  "    min-height: 35px !important;",
+  "    bottom: 0 !important;",
+  "    position: relative !important;",
+  "  }",
+  "  #o3c_box .o3c_body {",
+  "    height: calc(100% - 50px) !important;",
+  "  }",
+  "  /* Override the existing 620px height rule for mobile */",
+  "  #o3c_box > .o3c_body[style*=\"display: block\"] {",
+  "    height: calc(100dvh - 50px) !important;",
+  "  }",
+  "  /* Ensure iframe takes full height on mobile */",
+  "  #o3c_box iframe {",
+  "    height: 100% !important;",
+  "    width: 100% !important;",
+  "  }",
+  "  /* Adjust header text size for mobile */",
+  "  #o3c_box .o3c_header a {",
+  "    font-size: 16px !important;",
+  "    line-height: 1.2 !important; order:3;",
+  "  }",
+  "  /* Hide hamburger menu on mobile if needed */",
+  "  .clear-button {",
+  "    margin-right: 5px;order: 1",
+  "  }",
+  "  .meLogo {",
+  "    scale: 60%;order: 2;",
+  "  }",
+  "  #o3c_box .o3c_header a {",
+  "    font-size: 14px; order: 3",
+  "  }",
+  "}",
+  "#o3c_box .o3c_header{position:relative;border-top-left-radius:5px;border-top-right-radius:5px;min-height:50px;background-color: #000;line-height:14px;padding:10px;position:relative; display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap}",
+  '#o3c_box .o3c_header a{color:white;text-decoration:none;font-family:"Arial";font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;-webkit-font-smoothing:antialiased;cursor:pointer;text-align: center;}',
+  "#o3c_box .o3c_header a:hover{order:3;}",
+  "#o3c_box .o3c_body{position:relative;height:390px;background-color:" + t["bodyBackground"] + ";display:none;}",
+
+  // DODANE STYLE
+  '#o3c_box > .o3c_body[style*="display: block"]{height:620px;}',
+  //"#o3c_box > div.o3c_header > a:nth-child(2){margin-left:120px;}",
+  "#o3c_box .o3c_header{min-height:40px;}",
+  "#o3c_box .o3c_header a{color:#f3e600!important; order: 3; margin-left:0px;}",
+  ".meLogo{position:relative;height:35px;scale:70%;flex-shrink: 0;display: flex;align-items: center; order:2;}"
+].join(" ");
+ e.innerHTML += `
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+.pulse {
+  animation: pulse 5s infinite;
+}
+`;
+            document.head.appendChild(e)
+    }(),
+        function () {
+            function e() {
+                i.className = "o3c_header"
+            }
+			
+			//start fix
+			// --- zabezpieczenia: nadpisujemy t[...] zgodnie z rekomendacją enkodowania znaków ---
+(function(){
+    function escapeHTMLStrict(s) {
+        if (s == null) return '';
+        return String(s)
+            .replace(/&/g, '&amp;')   // najpierw &
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    // Lista kluczy w obiekcie t, które zwykle trafiają do DOM — rozwiń jeśli trzeba
+    var keysToSanitize = [
+        "headerTitle",
+        "headerColor",        // kolor sanitujemy osobno niż HTML-encode, ale tu zostawiamy dla bezpieczeństwa
+        "custName",
+        "custPhoneNumber",
+        "custEmail",
+        "custQuestion",
+        "service",
+        "motive"
+    ];
+
+    try {
+        for (var i = 0; i < keysToSanitize.length; i++) {
+            var k = keysToSanitize[i];
+            if (t.hasOwnProperty(k) && t[k] != null) {
+                // dla headerColor lepiej użyć walidacji koloru, ale jeśli chcesz prosty escape:
+                if (k === "headerColor") {
+                    // prosta walidacja koloru (hex lub słowo), jeśli nie przejdzie -> wyczyść
+                    var c = String(t[k]).trim();
+                    var hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+                    var word = /^[a-z]+$/i;
+                    t[k] = (hex.test(c) || word.test(c)) ? c : '';
+                } else {
+                    t[k] = escapeHTMLStrict(t[k]);
+                }
+            }
+        }
+    } catch (err) {
+        // w razie problemów nie przerywamy działania widgetu — nadpisujemy istotne wartości pustymi ciągami
+        try { t["headerTitle"] = t["headerTitle"] ? escapeHTMLStrict(t["headerTitle"]) : ''; } catch(e){}
+        try { t["headerColor"] = ''; } catch(e){}
+    }
+})();
+
+			//end fix
+			
+            var n = ['<div class="o3c_header">	<a class="chevron top">✕</a>', '	<a style="color:' + t["headerColor"] + '">' + t["headerTitle"] + "</a>", '</div><div class="o3c_body">	<iframe id="body-frame" allow="geolocation; microphone; camera" frameborder="0" style="width: 100%; height: 100%; z-index:4000"></iframe></div>'].join("")
+                , a = document.createElement("div");
+            a.id = "o3c_box",
+                a.className = "",
+                a.innerHTML = n;
+            a.style.display = "none";
+            for (var o = a.getElementsByClassName("o3c_body")[0], r = a.getElementsByTagName("iframe")[0], i = a.getElementsByClassName("o3c_header")[0], s = a.getElementsByClassName("chevron")[0], n = a.getElementsByTagName("a"), d = 0; d < n.length; d++)
+                n[d].addEventListener("click", function () {
+                    var isHidden = (o.style.display === "none" || o.style.display === "");
+
+                    if (isHidden) {
+                        if (!r.src) r.src = t["url"];
+                        o.style.display = "block";
+                        s.className = "chevron bottom";
+						
+						const meta = document.querySelector('meta[property="product:retailer_part_no"]');
+						const productId = meta ? meta.content : null;
+						
+						var data = cGetCookie("snrs_cludo_data");
+						const iframe = document.getElementById('body-frame');
+						iframe.contentWindow.postMessage({action:"cSendUserData", data: data, productId: productId}, '*', );
+						
+						
+
+                    } else {
+                        i.className = "o3c_header";
+                        o.style.display = "none";
+                        s.className = "chevron top";
+
+                        document.body.classList.remove("lock-scroll");
+						sessionStorage.setItem('cludo-widget-open', 'false');
+
+                        // Ukryj widget, pokaż dymek
+                        if (isMobile()) {
+                            unlockBody();
+                        }
+                        document.getElementById("o3c_box").style.display = "none";
+                        createHelpBubble();
+                    }
+
+
+                    return false;
+                }, false);
+            document.body.appendChild(a),
+                ["webkitAnimationEnd", "mozAnimationEnd", "MSAnimationEnd", "oanimationend", "animationend"].forEach(function (t) {
+                    i.addEventListener(t, e)
+                })
+
+            function createExpertHelpBubble(options = { call: true, chat: true }) {
+                if (!document.getElementById("expert-help-bubble")) {
+
+                    const oldElement = document.getElementById('help-bubble-content');
+                    const newElement = oldElement.cloneNode(true);
+                    oldElement.parentNode.replaceChild(newElement, oldElement);
+
+                    document.getElementById("help-bubble-content").addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        createExpertHelpBubble();
+                    });
+
+                    var bubble = document.createElement('div');
+                    bubble.id = "expert-help-bubble";
+                    bubble.style.position = "fixed";
+                    bubble.style.bottom = "25px";
+                    bubble.style.left = "75px";
+                    bubble.style.zIndex = "50";
+
+                    // Zbuduj przyciski dynamicznie
+                    let buttonsHTML = "";
+                    if (options.call) {
+                        buttonsHTML += `<div id="help-call-btn" style="display:flex; align-items:center; gap:8px; cursor:pointer;"" class="help-btn"><svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_iconCarrier"> <path d="M3 5.5C3 14.0604 9.93959 21 18.5 21C18.8862 21 19.2691 20.9859 19.6483 20.9581C20.0834 20.9262 20.3009 20.9103 20.499 20.7963C20.663 20.7019 20.8185 20.5345 20.9007 20.364C21 20.1582 21 19.9181 21 19.438V16.6207C21 16.2169 21 16.015 20.9335 15.842C20.8749 15.6891 20.7795 15.553 20.6559 15.4456C20.516 15.324 20.3262 15.255 19.9468 15.117L16.74 13.9509C16.2985 13.7904 16.0777 13.7101 15.8683 13.7237C15.6836 13.7357 15.5059 13.7988 15.3549 13.9058C15.1837 14.0271 15.0629 14.2285 14.8212 14.6314L14 16C11.3501 14.7999 9.2019 12.6489 8 10L9.36863 9.17882C9.77145 8.93713 9.97286 8.81628 10.0942 8.64506C10.2012 8.49408 10.2643 8.31637 10.2763 8.1317C10.2899 7.92227 10.2096 7.70153 10.0491 7.26005L8.88299 4.05321C8.745 3.67376 8.67601 3.48403 8.55442 3.3441C8.44701 3.22049 8.31089 3.12515 8.15802 3.06645C7.98496 3 7.78308 3 7.37932 3H4.56201C4.08188 3 3.84181 3 3.63598 3.09925C3.4655 3.18146 3.29814 3.33701 3.2037 3.50103C3.08968 3.69907 3.07375 3.91662 3.04189 4.35173C3.01413 4.73086 3 5.11378 3 5.5Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </g>
+                </svg> <span>${clMultiPhoneNumber}</span></div>`;
+                    }
+                    if (options.chat) {
+                        buttonsHTML += `<div id="help-chat-btn" style="display:flex; align-items:center; gap:8px; cursor:pointer;"" class="help-btn"><svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_iconCarrier"> <path d="M17 3.33782C15.5291 2.48697 13.8214 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22C17.5228 22 22 17.5228 22 12C22 10.1786 21.513 8.47087 20.6622 7" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/> <path d="M8 12H8.009M11.991 12H12M15.991 12H16" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </g>
+                </svg><span>Porozmawiaj na czacie</span></div>`;
+                    }
+
+                    bubble.innerHTML = `
+                        <div id="expert-help-bubble-content" style="
+                            background: #333;
+                            color: white;
+                            padding: 14px 16px;
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                            font-family: Arial, sans-serif;
+                            font-size: 14px;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 8px;
+                            max-width: 260px;
+                            position: relative;
+                        ">
+                            <div>
+                                <strong>${clMultiText}</strong><br/>
+                                Skontaktuj się z Expertem
+                                <p id='clHelpMore' style='text-decoration: underline;cursor: pointer;width: 30%;'>Więcej</p>
+                            </div>
+                            <div style="display:flex; flex-wrap:wrap;flex-direction: column;">
+                                ${buttonsHTML}
+                            </div>
+                            <button id="close-expert-bubble" style="
+                                position:absolute;
+                                top:0;
+                                right:0;
+                                background: transparent;
+                                border: none;
+                                color: white;
+                                font-size: 16px;
+                                cursor: pointer;
+                                text-shadow: 0.5px 0 currentColor, -0.5px 0 currentColor,
+                                             0 0.5px currentColor, 0 -0.5px currentColor;
+                            ">×</button>
+                            <div style="
+                                position: absolute;
+                                left: -7px;
+                                top: 75%;
+                                width: 0;
+                                height: 0;
+                                border-top: 8px solid transparent;
+                                border-bottom: 8px solid transparent;
+                                border-right: 8px solid #333;
+                            "></div>
+                        </div>
+                        `;
+
+                    if (isMobile()) {
+                        bubble.style.bottom = '140px';
+                    }
+
+                    document.body.appendChild(bubble);
+
+                    document.getElementById("clHelpMore").addEventListener("click", function (e) {
+                        clOpenPopup();
+                    });
+
+                    // Zamknij dymek
+                    document.getElementById("close-expert-bubble").addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        var el = document.getElementById("expert-help-bubble");
+                        if (el) el.style.display = "none";
+                    });
+
+                    // Obsługa kliknięcia "Napisz"
+                    let chatBtn = document.getElementById("help-chat-btn");
+                    if (chatBtn) {
+                        chatBtn.addEventListener("click", function (e) {
+
+                            e.stopPropagation();
+                            document.body.classList.add("lock-scroll");
+
+                            var widget = document.getElementById("o3c_box");
+                            if (widget) widget.style.display = "block";
+
+							let cUrl = t["url"];
+							if(clMultiType == 'klimatyzatory-split') {
+								let newMotive = 'MEPL-Klimatyzatory-Chat';
+								cUrl = t["url"].replace(/([?&]motive=)[^&]*/, `$1${newMotive}`);
+							}
+
+
+                            if (!r.src) r.src = cUrl;
+                            if (!r.src != cUrl) r.src = cUrl;
+                            o.style.display = "block";
+                            s.className = "chevron bottom";
+                            console.log('c' + r.src);
+							
+							document.querySelector(".clear-button").style.visibility = ""
+							document.querySelector(".hamburger-menu").style.visibility = ""
+							
+                            var helpBubble = document.getElementById("help-bubble");
+                            if (helpBubble) helpBubble.remove();
+
+                            sendSize();
+                            window.addEventListener('resize', sendSize);
+                        });
+                    }
+
+                    // Obsługa kliknięcia "Zadzwoń"
+                    let callBtn = document.getElementById("help-call-btn");
+                    if (callBtn) {
+                        callBtn.addEventListener("click", function (e) {
+
+                            e.stopPropagation();
+                            document.body.classList.add("lock-scroll");
+
+                            var widget = document.getElementById("o3c_box");
+                            if (widget) widget.style.display = "block";
+
+                            if (!r.src) r.src = t["url"];
+							let motive = 'MEPL-IVR';
+							if(clMultiType == 'apple') motive = 'MEPL-SPEC-Apple'
+							if(clMultiType == 'karcher') motive = 'MEPL-SPEC_KARCHER'
+							if(clMultiType == 'dyson') motive = 'MEPL-SPEC-Dyson'
+							if(clMultiType == 'Ekspresy') motive = 'MEPL-SPEC_Ekspresy'
+							if(clMultiType == 'klimatyzatory-split') motive = 'MEPL-SPEC_KLIMATYZATORY-SPLIT'
+							if(clMultiType == 'agd') motive = 'MEPL-SPEC_AGD'
+							if(clMultiType == 'audio') motive = 'MEPL-SPEC_Audio'
+							if(clMultiType == 'Electrolux-AGD') motive = 'MEPL-Electrolux-AGD'
+							if(clMultiType == 'rtv') motive = 'MEPL-SPEC_RTV'
+							if(clMultiType == 'philips-rtv') motive = 'MEPL-Philips-RTV'
+							if(clMultiType == 'it') motive = 'MEPL-SPEC-IT'
+							
+                            r.src = r.src.replace("chat.aspx", "audio.aspx").replace(/([?&])motive=[^&]*/i, '&motive='+motive);
+                            o.style.display = "block";
+                            s.className = "chevron bottom";
+
+                            console.log('a' + r.src);
+
+							document.querySelector(".clear-button").style.visibility = "hidden";
+							document.querySelector(".hamburger-menu").style.visibility = "hidden";
+
+                            var helpBubble = document.getElementById("help-bubble");
+                            if (helpBubble) helpBubble.remove();
+
+                            sendSize();
+                            window.addEventListener('resize', sendSize);
+                        });
+                    }
+                } else {
+                    var el = document.getElementById("expert-help-bubble");
+                    if (el) el.style.display = "block";
+                }
+            }
+
+            function createHelpBubble() {
+
+                if (!document.getElementById("help-bubble")) {
+
+                    var bubble = document.createElement('div');
+                    bubble.id = "help-bubble";
+                    bubble.className = "animated";
+
+                    // Mobile responsive positioning for help bubble
+                    if (isMobile()) {
+                        bubble.style.left = "10px";
+                    }
+
+                    let clBubbleHtml = `
+                   <style>
+                       
+                       #o3c_box > div.o3c_header > a:nth-child(2){
+                           display:none;
+                       }
+                       
+                       #help-bubble{
+                           position: fixed;
+                           bottom: 25px;
+                           left: 10px;
+                           z-index: 50;
+                       }
+                       
+                       @media screen and (max-width: 768px){
+                            #help-bubble.is-compare {
+                               bottom: 55px !important;
+                           }
+                           
+                           #help-bubble {
+                               bottom: 140px !important;
+                           }
+                       }
+                   
+                       #help-bubble-content {
+                         border-radius: 50% !important;
+                         width: ${clNewVersion ? `56px` : `48px`};
+                         height: ${clNewVersion ? `56px` : `48px`};
+                         padding: 0 !important;
+                         justify-content: center !important;
+                       }
+                   
+                       #help-bubble-content::before {
+                         color: white;
+                         font-size: 13px;
+                         font-weight: bold;
+                       }
+                       #close-bubble {
+                         display: none !important;
+                       }
+                   
+                   </style>
+                   
+                   <div id="help-bubble-content" class="" style="
+                       background: #000;
+                       color: white;
+                       padding: 10px 12px;
+                       border-radius: 12px;
+                       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                       font-family: Arial, sans-serif;
+                       font-size: 14px;
+                       display: flex;
+                       align-items: center;
+                       cursor: pointer;
+                   ">
+                   
+                   ${!clNewVersion
+                            ? `<img src="https://zx3ggv4fn2ruq4qi.cludo.pl/clicktointeract/Content/images/mexi.jpeg" alt="mexi" style="width: 32px; height: 32px; border-radius: 50px; width:92%; height: 92%;" />
+                            <span style="
+                             position: absolute;
+                             bottom: 4px;
+                             right: 4px;
+                             width: 12px;
+                             height: 12px;
+                             background: #34A853;
+                             border: 1px solid white;
+                             border-radius: 50%;
+                             display: block;
+                          "></span>`
+                            : `
+                       <span style="flex: 1;">
+                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="cLogo" style="
+                       vertical-align: middle;
+                       scale: 0.5;
+                       margin-bottom: 3px;
+                   ">
+                   <g clip-path="url(#clip0_17068_125336)">
+                   <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0.5C18.6274 0.500001 24 5.87259 24 12.5C24 14.607 23.4566 16.5885 22.502 18.3105L23.9824 23.8438C24.0303 24.0234 23.979 24.2151 23.8477 24.3467C23.7161 24.4785 23.5236 24.5303 23.3438 24.4824L17.8018 23.0068C16.0818 23.9585 14.1033 24.5 12 24.5C5.3726 24.5 8.41732e-06 19.1274 0 12.5C-1.04348e-06 5.8726 5.3726 0.500001 12 0.5ZM7 11C6.17157 11 5.5 11.6716 5.5 12.5C5.5 13.3284 6.17157 14 7 14C7.82843 14 8.5 13.3284 8.5 12.5C8.5 11.6716 7.82843 11 7 11ZM12 11C11.1716 11 10.5 11.6716 10.5 12.5C10.5 13.3284 11.1716 14 12 14C12.8284 14 13.5 13.3284 13.5 12.5C13.5 11.6716 12.8284 11 12 11ZM17 11C16.1716 11 15.5 11.6716 15.5 12.5C15.5 13.3284 16.1716 14 17 14C17.8284 14 18.5 13.3284 18.5 12.5C18.5 11.6716 17.8284 11 17 11Z" fill="white"></path>
+                   </g>
+                   <defs>
+                   <clipPath id="clip0_17068_125336">
+                   <rect width="24" height="24" fill="white" transform="translate(0 0.5)"></rect>
+                   </clipPath>
+                   </defs>
+                   </svg>
+                   
+                       </span>
+                   `}
+                       <button id="close-bubble" style="
+                           background: transparent;
+                           border: none;
+                           color: white;
+                           font-weight: bold;
+                           margin-left: 10px;
+                           cursor: pointer;
+                           font-size: 13px;
+                           min-height: 0px;
+                           min-width: 0px;
+                           font-weight: bold;
+                           text-shadow: 0.5px 0 currentColor, -0.5px 0 currentColor, 0 0.5px currentColor, 0 -0.5px currentColor;
+                       ">×</button>
+                   </div>
+                   `;
+
+                    bubble.innerHTML = clBubbleHtml;
+
+
+                    document.body.appendChild(bubble);
+
+
+                    document.getElementById("close-bubble").addEventListener("click", function () {
+                        if (isMobile()) {
+                            unlockBody();
+                        }
+                        var el = document.getElementById("help-bubble");
+                        if (el) el.remove();
+                    });
+
+                    document.getElementById("help-bubble-content").addEventListener("click", function (e) {
+                        if (e.target.id === "close-bubble") return;
+
+                        if (document.getElementById("expert-help-bubble") && document.getElementById("expert-help-bubble").style.display != 'none') {
+                            return
+                        }
+
+                        if (clNewVersion && clMulti) {
+                            createExpertHelpBubble();
+                            return;
+                        }
+
+                        if (isMobile()) {
+                            lockBody();
+                        }
+                        // Pokazujemy widget
+                        document.body.classList.add("lock-scroll");
+						sessionStorage.setItem('cludo-widget-open', 'true');
+
+                        var widget = document.getElementById("o3c_box");
+                        if (widget) widget.style.display = "block";
+
+                        if (!r.src) r.src = t["url"];
+                        o.style.display = "block";
+                        s.className = "chevron bottom";
+
+                        // Usuwamy dymek
+
+                        var helpBubble = document.getElementById("help-bubble");
+                        if (helpBubble) helpBubble.remove();
+
+                        sendSize();
+                        window.addEventListener('resize', sendSize);
+
+                    });
+					
+					 if (sessionStorage.getItem('cludo-widget-open') === 'true') {
+						document.getElementById("help-bubble-content").click();
+					}			
+                }
+            }
+
+            sendSize();
+            createHelpBubble();
+            if (clNewVersion && clMulti && !isMobile()) {
+                setTimeout(() => {
+                    createExpertHelpBubble({ call: true, chat: true });
+                }, 3000);
+            }
+
+            var status = sessionStorage.getItem("status");
+            if (status && status == "OPEN") {
+                var toggles = document.getElementById("c2iToggle");
+                toggles.click();
+            }
+        }()
+}();
+
+function addClearButton() {
+	sendSize();
+    const header = document.querySelector('.o3c_header');
+    if (header && !header.querySelector('.clear-button')) {
+        const button = document.createElement('button');
+        button.className = 'clear-button';
+        button.innerHTML = `
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>`;
+			
+			 const menu = document.createElement('ul');
+        menu.className = 'hamburger-menu';
+        menu.innerHTML = `
+            <li id='hamburger-menu-main' class="menu-main">Menu główne</li>
+            <li class="menu-download">Pobierz transkrypcję rozmowy</li>
+            <li class="menu-mail">Wyślij transkrypcję rozmowy na maila</li>
+            <li class="menu-restart">Rozpocznij nową rozmowę</li>
+            <li class="menu-close">Zakończ rozmowę</li>
+        `;
+		        
+		 // Ukryj menu na starcie
+        menu.style.display = 'none';
+
+        // Obsługa kliknięcia hamburgera
+        button.onclick = () => {
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        };
+
+        button.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            z-index: 1000;
+            flex-shrink: 0;order:1`;
+
+        header.style.position = 'relative';
+		
+		const logoWrapper = document.createElement('div');
+logoWrapper.className = 'meLogo';
+logoWrapper.innerHTML = `
+   <svg role="img" aria-labelledby="Media Expert | Sklep internetowy RTV, AGD, komputery" width="248" height="34" viewBox="0 0 248 34" fill="none" xmlns="http://www.w3.org/2000/svg" data-v-858cada0=""><title data-v-858cada0="">Media Expert | Sklep internetowy RTV, AGD, komputery</title> <desc data-v-858cada0="">Media Expert | Sklep internetowy RTV, AGD, komputery</desc> <path d="M198.977 8.93018C198.902 8.87958 198.827 8.85429 198.751 8.85429C198.15 8.90488 197.222 9.13256 196.52 9.41083C195.617 9.81559 194.689 10.4733 193.887 11.207V9.18316C193.887 9.00607 193.761 8.87958 193.586 8.87958H188.119C187.969 8.87958 187.818 9.00607 187.818 9.18316V27.3468C187.818 27.5239 187.969 27.6504 188.119 27.6504H193.937C194.087 27.6504 194.238 27.5239 194.238 27.3468V15.3811C194.413 15.3052 194.664 15.204 194.664 15.204C195.166 15.0016 195.667 14.7739 196.52 14.6221C197.422 14.4703 198.25 14.4451 198.751 14.4956C198.827 14.4956 198.927 14.4703 198.977 14.4198C199.052 14.3439 199.077 14.268 199.077 14.1921V9.15786C199.077 9.08196 199.052 8.98077 198.977 8.93018Z" fill="white" data-v-858cada0=""></path> <path d="M144.261 27.1697C144.261 27.1697 137.867 18.1132 137.616 17.759C137.867 17.4302 143.86 9.36023 143.86 9.36023C143.885 9.30964 143.91 9.23374 143.91 9.18315C143.91 9.13255 143.91 9.08196 143.885 9.03136C143.835 8.93017 143.734 8.87958 143.609 8.87958H137.591C137.49 8.87958 137.415 8.93017 137.34 9.00607C137.34 9.00607 134.381 13.332 133.955 13.9644C133.528 13.332 130.595 9.00607 130.595 9.00607C130.544 8.93017 130.444 8.87958 130.344 8.87958H123.899C123.799 8.87958 123.699 8.93017 123.649 9.03136C123.623 9.08196 123.598 9.13255 123.598 9.18315C123.598 9.23374 123.623 9.30964 123.674 9.36023C123.674 9.36023 129.943 17.5567 130.193 17.8855C129.943 18.265 123.548 27.1697 123.548 27.1697C123.523 27.2203 123.498 27.2962 123.498 27.3468C123.498 27.3974 123.498 27.448 123.523 27.4986C123.573 27.5998 123.699 27.6504 123.799 27.6504H130.093C130.218 27.6504 130.294 27.5998 130.369 27.4986C130.369 27.4986 133.428 22.5403 133.879 21.8066C134.331 22.5403 137.29 27.4986 137.29 27.4986C137.365 27.5998 137.44 27.6504 137.566 27.6504H144.01C144.135 27.6504 144.236 27.5998 144.286 27.4986C144.311 27.448 144.311 27.3974 144.311 27.3468C144.311 27.2962 144.311 27.2203 144.261 27.1697Z" fill="white" data-v-858cada0=""></path> <path d="M155.245 8.70242C154.518 8.80361 153.791 8.95539 153.113 9.18307C152.537 9.36016 151.96 9.61313 151.458 9.89141V9.18307C151.458 9.00599 151.333 8.8795 151.158 8.8795H145.691C145.541 8.8795 145.39 9.00599 145.39 9.18307V33.6964C145.39 33.8482 145.541 34 145.691 34H151.509C151.659 34 151.81 33.8482 151.81 33.6964V27.3467C152.186 27.4732 152.612 27.5997 152.988 27.6756C153.59 27.8021 154.317 27.9033 155.245 27.9539V23.0967C154.869 23.1473 154.468 23.1726 154.041 23.1473C153.164 23.122 152.286 22.9197 151.81 22.7173V14.445C152.261 14.1667 152.762 13.9643 153.264 13.8125C153.841 13.6607 154.593 13.5596 155.12 13.5596H155.245V8.70242ZM163.219 11.3587C161.79 9.63843 159.759 8.72772 157.176 8.62653C156.549 8.60123 155.897 8.62653 155.245 8.70242V13.5596C156.423 13.5849 157.251 13.9643 157.878 14.7485C158.404 15.4316 158.68 16.5447 158.705 18.0625C158.705 19.6816 158.329 20.997 157.627 21.8825C157.075 22.5402 156.273 22.945 155.245 23.0967V27.9539H155.972C157.201 27.9286 158.73 27.625 159.683 27.2202C160.837 26.7143 161.74 26.0566 162.567 25.1711C163.369 24.2857 163.971 23.2991 164.423 22.0848C164.849 20.8706 165.1 19.3274 165.1 17.7084C165.1 15.1533 164.423 12.8259 163.219 11.3587Z" fill="white" data-v-858cada0=""></path> <path d="M211.841 23.2991C211.765 23.2232 211.665 23.1979 211.59 23.2232C211.439 23.2738 210.085 23.375 209.784 23.375C208.957 23.4003 208.38 23.3244 208.129 23.1726C207.828 22.9956 207.678 22.8185 207.528 22.4896C207.377 22.1354 207.352 21.6295 207.352 21.2247L207.327 19.5804V13.7872H211.389C211.54 13.7872 211.69 13.6608 211.69 13.4837V9.53725C211.69 9.36017 211.54 9.23368 211.389 9.23368H207.227V3.97178C207.227 3.87059 207.202 3.7947 207.126 3.7441C207.051 3.66821 206.926 3.66821 206.85 3.69351L201.133 5.43904C201.008 5.46434 200.933 5.59082 200.933 5.71731V21.6042C200.933 24.0328 201.459 25.5506 202.688 26.5625C203.841 27.5238 205.597 28.0298 207.879 28.0298L210.486 27.878L210.762 27.8527L211.715 27.7009C211.866 27.6756 211.966 27.5491 211.966 27.3973V23.5268C211.966 23.4256 211.916 23.3497 211.841 23.2991Z" fill="white" data-v-858cada0=""></path> <path d="M114.421 8.29755C111.587 8.39874 109.305 9.28416 107.5 11.0044C105.695 12.7752 104.717 15.305 104.666 18.3407C104.641 21.3764 105.795 24.235 107.65 25.8288C109.456 27.3466 111.512 28.055 114.421 28.1309V23.3749C113.593 23.2484 112.967 22.9954 112.465 22.616C111.938 22.2112 111.337 21.2752 111.186 19.985H114.421V15.988H111.136C111.211 14.9761 111.663 13.8377 112.214 13.3571C112.891 12.7752 113.468 12.5475 114.421 12.5222V8.29755ZM114.421 28.1309H115.324C117.48 28.1056 119.286 27.802 121.743 27.0937C121.868 27.0684 121.969 26.9419 121.969 26.7901V22.7931C121.969 22.6919 121.919 22.5907 121.843 22.5401C121.768 22.4895 121.668 22.4642 121.568 22.4895C119.787 23.0966 117.781 23.4255 116.678 23.4761C115.8 23.5014 115.048 23.4761 114.421 23.3749V28.1309ZM121.593 10.8526C120.088 9.10707 117.957 8.29755 114.897 8.29755H114.421V12.5222H114.596C115.625 12.5222 116.302 12.7752 116.853 13.3824C117.28 13.8377 117.681 14.9255 117.681 15.9627V15.988H114.421V19.985H123.373C123.523 19.985 123.674 19.8585 123.674 19.6815L123.749 18.0118V17.7083C123.749 14.7484 123.072 12.5475 121.593 10.8526Z" fill="white" data-v-858cada0=""></path> <path d="M176.208 8.29755C173.375 8.39874 171.118 9.28416 169.312 11.0044C167.482 12.7752 166.504 15.305 166.479 18.3407C166.454 21.3764 167.607 24.235 169.463 25.8288C171.268 27.3466 173.325 28.055 176.208 28.1309V23.3749C175.406 23.2484 174.779 22.9954 174.277 22.616C173.751 22.2112 173.149 21.3005 172.974 19.985H176.208V15.988H172.948C172.999 14.9761 173.45 13.8377 174.027 13.3571C174.679 12.7752 175.255 12.5475 176.208 12.5222V8.29755ZM176.208 28.1309H177.136C179.293 28.1056 181.073 27.802 183.556 27.0937C183.681 27.0684 183.781 26.9419 183.781 26.7901V22.7931C183.781 22.6919 183.731 22.5907 183.631 22.5401C183.556 22.4895 183.455 22.4642 183.38 22.4895C181.6 23.0966 179.594 23.4255 178.49 23.4761C177.587 23.5014 176.86 23.4761 176.208 23.3749V28.1309ZM183.405 10.8526C181.875 9.10707 179.744 8.29755 176.685 8.29755H176.208V12.5222H176.409C177.412 12.5222 178.089 12.7752 178.666 13.3824C179.092 13.8377 179.493 14.9255 179.493 15.9374V15.988H176.208V19.985H185.185C185.336 19.985 185.486 19.8585 185.486 19.6815L185.562 18.0118V17.683C185.562 14.7484 184.859 12.5475 183.405 10.8526Z" fill="white" data-v-858cada0=""></path> <path d="M81.5217 8.87909H75.7291C75.5536 8.87909 75.4282 9.00558 75.4282 9.18266V27.3463C75.4282 27.5234 75.5536 27.6499 75.7291 27.6499H81.5217C81.6972 27.6499 81.8477 27.5234 81.8477 27.3463V9.18266C81.8477 9.00558 81.6972 8.87909 81.5217 8.87909Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M61.8875 8.60162C61.6618 8.57632 61.4362 8.57632 61.1854 8.57632C59.9316 8.60162 58.402 8.90519 57.4491 9.33525C56.3207 9.8159 55.3929 10.4736 54.5654 11.3843C53.7629 12.2445 53.1611 13.2564 52.7348 14.4454C52.2835 15.6596 52.0327 17.2028 52.0327 18.8218C52.0327 21.3769 52.7348 23.7043 53.9385 25.1715C55.3427 26.8918 57.3739 27.8278 59.9567 27.929C60.5836 27.9543 61.2355 27.9037 61.8875 27.8278V22.9959C60.709 22.9706 59.8814 22.5912 59.2796 21.807C58.728 21.1239 58.4521 19.9855 58.4521 18.4677C58.4271 16.8486 58.8032 15.5332 59.5304 14.673C60.0821 14.0153 60.8594 13.6105 61.8875 13.4588V8.60162ZM71.4414 2.5555H65.6489C65.4734 2.5555 65.348 2.68198 65.348 2.85907V9.20876C64.9718 9.05697 64.5205 8.93048 64.1443 8.85459C63.5425 8.7534 62.8404 8.62691 61.8875 8.60162V13.4588C62.2637 13.4082 62.6649 13.3829 63.0912 13.4082C63.9688 13.4082 64.8465 13.6358 65.348 13.8382V22.1105C64.8715 22.3635 64.37 22.5912 63.8685 22.7177C63.3168 22.8947 62.5395 22.9959 62.0129 22.9959H61.8875V27.8278C62.6398 27.7519 63.367 27.6001 64.044 27.3724C64.5957 27.1953 65.1725 26.9424 65.674 26.6641V27.3471C65.674 27.5242 65.8244 27.676 65.9749 27.676H71.4414C71.6169 27.676 71.7423 27.5242 71.7423 27.3471V2.85907C71.7423 2.68198 71.6169 2.5555 71.4414 2.5555Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M40.8988 8.29755C38.0652 8.39874 35.7833 9.28415 33.9778 11.0044C32.1724 12.7752 31.1944 15.305 31.1694 18.3407C31.1443 21.3764 32.2727 24.235 34.1534 25.8288C35.9338 27.3466 37.99 28.055 40.8988 28.1309V23.3749C40.0713 23.2484 39.4444 22.9954 38.9429 22.616C38.4413 22.2112 37.8145 21.3005 37.664 19.985H40.8988V15.988H37.6138C37.6891 14.9761 38.1404 13.8377 38.6921 13.3571C39.3692 12.7752 39.9459 12.5475 40.8988 12.5222V8.29755ZM40.8988 28.1309H41.8015C43.958 28.1056 45.7635 27.802 48.2209 27.0937C48.3463 27.0684 48.4466 26.9419 48.4466 26.7901V22.7931C48.4466 22.6919 48.3965 22.5907 48.3212 22.5401C48.246 22.4895 48.1457 22.4642 48.0454 22.4895C46.265 23.0966 44.2589 23.4255 43.1556 23.4761C42.278 23.5014 41.5257 23.4761 40.8988 23.3749V28.1309ZM48.0705 10.8526C46.5659 9.10707 44.4345 8.29755 41.3752 8.29755H40.8988V12.5222H41.0743C42.1024 12.5222 42.7795 12.7752 43.3311 13.3824C43.7574 13.8377 44.1586 14.9255 44.1586 15.9374V15.988H40.8988V19.985H49.8509C50.0264 19.985 50.1518 19.8585 50.1518 19.6815L50.227 18.0118V17.7083C50.227 14.7484 49.5499 12.5475 48.0705 10.8526Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M93.0809 15.381C92.6045 15.4316 92.0779 15.5075 91.5513 15.5581C89.9464 15.7858 88.5673 16.1399 87.489 16.6206C86.4358 17.0759 85.5331 17.8349 84.856 18.7962C84.179 19.7575 83.9282 21.1994 83.9282 22.2113V22.3125C83.9282 23.5521 84.2041 25.2217 85.5832 26.4866C86.7367 27.5491 88.2162 28.1057 90.0969 28.131C91.0999 28.1563 92.1029 28.0551 93.0809 27.8274V23.6027C92.8552 23.6533 92.6295 23.6786 92.4039 23.7039C91.451 23.7292 90.799 23.5774 90.3727 22.7932C90.2473 22.5908 90.1721 22.2872 90.1721 21.9331C90.1721 21.4777 90.2724 20.9971 90.5984 20.5417C90.9495 20.061 91.7519 19.631 92.8552 19.3527C92.9304 19.3274 93.0057 19.3274 93.0809 19.3021V15.381ZM93.0809 8.34826C91.9023 8.37356 90.6736 8.50005 89.4198 8.70243L86.8872 9.23368L86.4358 9.33487C86.3104 9.36016 86.185 9.48665 86.185 9.61314V13.4837C86.185 13.5596 86.2352 13.6608 86.3104 13.7114C86.4107 13.7872 86.511 13.7872 86.5863 13.7619C87.0126 13.6102 88.1159 13.2307 89.4198 13.003C90.2223 12.8512 91.2253 12.75 92.2283 12.7247C92.5292 12.7247 92.8301 12.7247 93.0809 12.75V8.34826ZM102.359 15.6846C102.284 13.1042 101.456 11.0551 100.052 9.94201C99.1743 9.28427 98.0961 8.82892 96.6918 8.57594C95.6637 8.39886 94.4852 8.32296 93.0809 8.34826V12.75C93.9836 12.7753 94.6356 12.9524 95.112 13.2813C95.6888 13.6355 95.9646 14.2679 96.0148 15.128C95.0368 15.2039 94.0839 15.2798 93.0809 15.381V19.3021C93.8583 19.125 94.8613 18.9985 96.0148 18.8974V22.3125C95.5885 22.6414 94.3848 23.375 93.0809 23.6027V27.8274C93.7078 27.7009 94.3347 27.4985 94.9365 27.2709C94.9365 27.2709 95.8392 26.8408 96.3658 26.6131V27.3467C96.3658 27.5238 96.4912 27.6503 96.6667 27.6503H102.058C102.209 27.6503 102.359 27.5238 102.359 27.3467C102.359 27.2456 102.409 18.0119 102.359 15.6846Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M27.8593 10.3721C27.0067 9.38554 25.8031 8.77839 24.2233 8.57601L23.8722 8.52542C23.8471 8.52542 23.6967 8.50012 23.6967 8.50012L23.145 8.47482C21.7157 8.47482 20.3616 8.7531 19.1329 9.25905C18.3555 9.58792 17.3525 10.2457 16.851 10.5998C16.2742 9.7397 15.4467 9.10726 14.3183 8.77839C13.7666 8.62661 13.1648 8.52542 12.4376 8.50012C11.1588 8.44953 9.52882 8.6772 8.47564 9.05667C7.79859 9.28435 6.94601 9.68911 6.06836 10.2962V9.18316C6.06836 9.00607 5.9179 8.87959 5.76745 8.87959H0.30091C0.125379 8.87959 0 9.00607 0 9.18316V27.3468C0 27.5239 0.125379 27.6504 0.30091 27.6504H6.11851C6.26896 27.6504 6.41942 27.5239 6.41942 27.3468V14.6474C6.94601 14.2933 7.9992 13.7873 9.00223 13.6861C9.72943 13.6355 10.3062 13.762 10.7074 14.1162C11.3343 14.6474 11.3844 15.5834 11.4346 15.9882C11.4346 16.0641 11.4847 18.265 11.4847 18.265V27.3468C11.4847 27.5239 11.6352 27.6504 11.7857 27.6504H17.5531C17.7286 27.6504 17.854 27.5239 17.854 27.3468V14.6474C18.3806 14.2933 19.4589 13.7873 20.4619 13.6861C21.1891 13.6355 21.7658 13.762 22.1671 14.1162C22.7939 14.6474 22.8441 15.5834 22.8692 15.9882C22.8692 16.0641 22.9444 18.265 22.9444 18.265V27.3468C22.9444 27.5239 23.0698 27.6504 23.2453 27.6504H29.088C29.2384 27.6504 29.3889 27.5239 29.3889 27.3468V15.5328C29.3889 13.1802 28.9125 11.5864 27.8593 10.3721Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M82.8006 3.94618L78.9891 0.100945C78.9389 0.0503492 78.8637 -0.000246048 78.7885 -0.000246048C78.6882 -0.000246048 78.6129 0.0503492 78.5628 0.100945L74.7513 3.94618C74.6259 4.07267 74.6259 4.24975 74.7513 4.37624L78.5628 8.22147C78.6129 8.27207 78.6882 8.29736 78.7885 8.29736C78.8637 8.29736 78.9389 8.27207 78.9891 8.22147L82.8006 4.37624C82.926 4.24975 82.926 4.07267 82.8006 3.94618Z" fill="white" data-v-858cada0=""></path> <path d="M248 16.9491C248 24.842 241.631 31.2676 233.782 31.2676C225.933 31.2676 219.564 24.842 219.564 16.9491C219.564 9.03101 225.933 2.60542 233.782 2.60542C241.631 2.60542 248 9.03101 248 16.9491Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M248 16.9491C248 24.842 241.631 31.2676 233.782 31.2676C225.933 31.2676 219.564 24.842 219.564 16.9491C219.564 9.03101 225.933 2.60542 233.782 2.60542C241.631 2.60542 248 9.03101 248 16.9491Z" fill="#FFF200" data-v-858cada0=""></path> <path d="M241.204 16.6136C241.204 16.062 240.979 15.5856 240.577 15.2597L232.227 8.03903C231.701 7.56267 230.973 7.48745 230.346 7.81338C229.77 8.11424 229.394 8.71597 229.394 9.39291V16.6136V23.8092C229.394 24.4861 229.77 25.0879 230.346 25.3887C230.973 25.7146 231.701 25.6144 232.227 25.1631L240.577 17.9424C240.979 17.6165 241.204 17.115 241.204 16.6136Z" fill="black" data-v-858cada0=""></path></svg>
+`;
+header.appendChild(logoWrapper);
+        header.appendChild(button);
+		 header.appendChild(menu);
+		 
+
+document.querySelector("#o3c_box > div.o3c_header > a:nth-child(2)").remove()
+
+
+ menu.querySelector('.menu-main').onclick = () => {
+	     if (!menu.querySelector('.menu-main').classList.contains('disabled')) {
+
+            clearIframe();
+            menu.style.display = 'none'; // zamknij menu po akcji
+		 }
+        };
+		menu.querySelector('.menu-restart').onclick = () => {
+			 if (!menu.querySelector('.menu-restart').classList.contains('disabled')) {
+				removeData();
+				clearIframe();
+				menu.style.display = 'none'; // zamknij menu po akcji
+			 }
+        };
+        menu.querySelector('.menu-download').onclick = () => {
+			if (!menu.querySelector('.menu-download').classList.contains('disabled')) {
+				dTranscript();
+				menu.style.display = 'none';
+			}
+        };
+        menu.querySelector('.menu-mail').onclick = () => {
+			if (!menu.querySelector('.menu-mail').classList.contains('disabled')) {
+				sTranscript();
+				menu.style.display = 'none';
+			}
+        };
+		
+		menu.querySelector('.menu-close').onclick = () => {
+			if (!menu.querySelector('.menu-close').classList.contains('disabled')) {
+				sClose();
+				menu.style.display = 'none';
+			}
+        };
+
+        const style = document.createElement('style');
+        style.textContent = `
+            .hamburger {
+                width: 25px;
+                height: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .hamburger span {
+                display: block;
+                height: 4px;
+                background: #f3e600;
+                border-radius: 3px;
+            }
+            .hamburger-menu {
+                position: absolute;
+                top: 45px;
+                right: 0;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                list-style: none;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                min-width: 200px;
+				z-index: 999;
+				left: 0;
+				padding: 0;
+				
+            }
+            .hamburger-menu li {
+                padding: 8px 12px;
+                cursor: pointer;
+            }
+			.hamburger-menu li.disabled {
+                background: lightgray;
+                cursor: default;
+            }
+            .hamburger-menu li:hover {
+                background: #f3e600;
+            }
+			.hamburger-menu li.disabled {
+                background: lightgray;
+            }
+        `;
+        document.head.appendChild(style);
+
+    }
+}
+
+function removeData(){
+	const iframe = document.getElementById('body-frame');
+    if (iframe) {
+        iframe.contentWindow.postMessage('removeData', '*');
+        console.log('Wysłano wiadomość do iframe: clear');
+    } else {
+        console.warn("Nie znaleziono iframe o id 'body-frame'.");
+    } 
+}
+
+function clearIframe() {
+    const iframe = document.getElementById('body-frame');
+    if (iframe) {
+        iframe.contentWindow.postMessage('clear', '*');
+        console.log('Wysłano wiadomość do iframe: clear');
+    } else {
+        console.warn("Nie znaleziono iframe o id 'body-frame'.");
+    }
+}
+
+function dTranscript(){
+
+	const iframe = document.getElementById('body-frame');
+    if (iframe) {
+        iframe.contentWindow.postMessage('dTranscript', '*');
+        console.log('Wysłano wiadomość do iframe: dTranscript');
+    } else {
+        console.warn("Nie znaleziono iframe o id 'body-frame'.");
+    }
+}
+
+function sTranscript(){
+		const iframe = document.getElementById('body-frame');
+    if (iframe) {
+        iframe.contentWindow.postMessage('sTranscript', '*');
+        console.log('Wysłano wiadomość do iframe: sTranscript');
+    } else {
+        console.warn("Nie znaleziono iframe o id 'body-frame'.");
+    }
+}
+
+function sClose(){
+	const iframe = document.getElementById('body-frame');
+    if (iframe) {
+        iframe.contentWindow.postMessage('wClose', '*');
+        console.log('Wysłano wiadomość do iframe: wClose');
+    } else {
+        console.warn("Nie znaleziono iframe o id 'body-frame'.");
+    }
+}
+	
+function sendSize() {
+    const iframe = document.getElementById('body-frame');
+	iframe?.contentWindow.postMessage({ width: window.innerWidth }, '*');
+}
+
+let blinkInterval = null;
+let originalTitle = document.title;
+
+function startBlink(newTitle) {
+    if (blinkInterval) return;
+addNotificationIfHidden();
+   if (document.hidden) {
+        blinkInterval = setInterval(() => {
+            document.title = (document.title === originalTitle) ? newTitle : originalTitle;
+        }, 1000);
+    } else {
+		    const o3cBox = document.getElementById('o3c_box');
+    if (!o3cBox) return;
+	const style = window.getComputedStyle(o3cBox);
+    if (style.display === 'none') {
+
+        let count = 0;
+        const maxBlinks = 4;
+        blinkInterval = setInterval(() => {
+            document.title = (document.title === originalTitle) ? newTitle : originalTitle;
+            count++;
+            if (count >= maxBlinks) {
+                clearInterval(blinkInterval);
+                blinkInterval = null;
+                document.title = originalTitle; // Upewnij się, że wraca do oryginalnego
+            }
+        }, 500);
+	}
+    }
+}
+
+function stopBlink() {
+    if (blinkInterval) {
+        clearInterval(blinkInterval);
+        blinkInterval = null;
+        document.title = originalTitle;
+    }
+}
+
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+        stopBlink();
+    }
+});
+
+function addNotificationIfHidden() {
+    const o3cBox = document.getElementById('o3c_box');
+    const helpBubble = document.getElementById('help-bubble-content');
+
+    if (!o3cBox || !helpBubble) return;
+
+    const style = window.getComputedStyle(o3cBox);
+    if (style.display === 'none') {
+        const notificationCircle = document.createElement('span');
+        notificationCircle.style.width = '10px';
+        notificationCircle.style.height = '10px';
+        notificationCircle.style.background = 'red';
+        notificationCircle.style.borderRadius = '50%';
+        notificationCircle.style.position = 'absolute';
+        notificationCircle.style.top = '5px';
+        notificationCircle.style.right = '5px';
+        notificationCircle.style.zIndex = '9999';
+
+        // Pomocniczy wrapper z relative, żeby absolute działało
+        helpBubble.style.position = 'relative';
+        helpBubble.appendChild(notificationCircle);
+    }
+}
+
+let scrollY = 0;
+
+
+function lockBody() {
+  scrollY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.left = 0;
+  document.body.style.right = 0;
+  document.body.style.width = '100%';
+}
+
+function unlockBody() {
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, scrollY);
+}
+
+// Tworzenie popupu
+function clOpenPopup() {
+  // overlay
+  const overlay = document.createElement("div");
+  overlay.id = "customOverlay";
+  Object.assign(overlay.style, {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: "9999",
+  });
+
+  // kontener popupu
+  const popup = document.createElement("div");
+  Object.assign(popup.style, {
+    position: "relative",
+    display: "flex",
+    background: "#fff",
+    borderRadius: "10px",
+    overflow: "hidden",
+    width: "800px",
+    maxWidth: "90%",
+    boxShadow: "0 5px 20px rgba(0,0,0,0.3)",
+    fontFamily: "Arial, sans-serif",
+  });
+
+  // przycisk X
+  const closeBtn = document.createElement("span");
+  closeBtn.innerHTML = "&times;";
+  Object.assign(closeBtn.style, {
+    position: "absolute",
+    top: "10px",
+    right: "15px",
+    fontSize: "28px",
+    fontWeight: "bold",
+    color: "#333",
+    cursor: "pointer",
+  });
+
+  // lewa część (zdjęcie)
+  const left = document.createElement("div");
+  Object.assign(left.style, {
+    flex: "1",
+    backgroundImage: "url('https://zx3ggv4fn2ruq4qi.cludo.pl/clicktointeract/Content/images/callusmodal.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    minHeight: "500px",
+  });
+
+  // prawa część (tekst)
+  const right = document.createElement("div");
+  Object.assign(right.style, {
+    flex: "1",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  });
+
+  right.innerHTML = `
+    <h2 style="margin-top:0; font-size:22px; color:#333;">Nie wiesz jaki produkt wybrać?</h2>
+    <p>Skontaktuj się z Expertem pod numerem:</p>
+    <p style="font-size:20px; font-weight:bold; color:#0077cc;">${clMultiPhoneNumber}</p>
+    <ul style="padding-left:18px; color:#333; line-height:1.5;">
+      <li>Wspólnie ustalicie jakiego sprzętu potrzebujesz</li>
+      <li>Pomoże Ci w wyborze konkretnego produktu</li>
+      <li>Odpowie na wszystkie Twoje pytania</li>
+      <li>Zrealizuje razem z Tobą zamówienie</li>
+    </ul>
+    <p style="margin-top:10px; color:#666; font-size:14px;">
+      Godziny pracy infolinii:<br>
+      poniedziałek - piątek: ${clWorkHoursConfig.weekday.open} - ${clWorkHoursConfig.weekday.close
+}<br>
+      sobota: ${clWorkHoursConfig.saturday.open} - ${clWorkHoursConfig.saturday.close}
+	${clWorkHoursConfig.sunday?.open 
+      ? `<br>niedziela: ${clWorkHoursConfig.sunday.open} - ${clWorkHoursConfig.sunday.close}` 
+      : ``}
+    </p>
+  `;
+
+  // dodanie elementów
+  popup.appendChild(closeBtn);
+  popup.appendChild(left);
+  popup.appendChild(right);
+  overlay.appendChild(popup);
+  document.body.appendChild(overlay);
+
+  // obsługa zamykania
+  closeBtn.addEventListener("click", () => {
+    document.body.removeChild(overlay);
+  });
+}
+
+
+function cGetCookie(name){
+	  let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+}
+
+
+window.addEventListener("message", async (event) => {
+    if (event.data?.action === "blinkTitle") {
+        startBlink(event.data.text);
+    }
+	if(event.data?.action === "agentJoined"){
+		document.getElementById("hamburger-menu-main").classList.add('disabled')
+	}
+	
+	if (event.data?.action === "downloadTranscript") {
+        var d = event.data.d;
+        console.log("Transcript data:", d);
+
+        try {
+            const response = await fetch(
+                "https://zx3ggv4fn2ruq4qi.cludo.pl/InternalWS/zx3ggv/ChatNLPApi/pdf",
+                {
+                    method: "POST",
+                    headers: {
+                        "accept": "*/*",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(d) // <-- przekazujesz całość jako tablicę obiektów
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Błąd API: " + response.status);
+            }
+
+            // API zwróci PDF jako blob
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            // automatyczne pobranie PDF
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "transcript.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+
+        } catch (err) {
+            console.error("Błąd podczas pobierania PDF:", err);
+        }
+    }
+	if (event.data?.action === "sendTranscript") {
+        var d = event.data.d;
+        console.log("Transcript data:", d);
+		//modal start
+		document.getElementById("emailModalOverlay")?.remove();
+
+// 🔹 Stwórz modal
+const modal = document.createElement("div");
+modal.innerHTML = `
+  <div id="emailModalOverlay" style="
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;">
+    <div id="emailModal" style="
+      background: white; padding: 30px 25px; border-radius: 10px; width: 360px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif; text-align: center;">
+      
+      <h3 style="margin-bottom: 15px; font-weight: 500; font-size: 18px;">Podaj adres e-mail</h3>
+      
+      <input id="emailInput" type="email" placeholder="np. jan@domena.pl"
+        style="
+          position: relative;
+          width: 90%;
+          height: 35px !important;
+          text-overflow: ellipsis;
+          font-size: 16px;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          -ms-appearance: none;
+          appearance: none;
+          background-color: transparent;
+          border: 1px solid #888;
+          border-radius: 4px;
+          outline: 0;
+          padding-left: 15px;
+          padding-right: 15px;
+          transition-property: color, background, opacity, border-color, box-shadow;
+          transition-duration: .2s;
+          transition-timing-function: ease-in-out;
+        "
+      />
+      
+      <div id="captchaContainer" style="display: flex; justify-content: center; margin: 20px 0;"></div>
+
+      <div style="display: flex; justify-content: space-between; margin-top: 1rem; padding: 0 0.5rem;">
+        <button id="cancelBtn" style="
+          float: right;
+          height: 35px;
+          width: 48%;
+          background-color: #888;
+          border: none;
+          color: white;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin-top: 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background 0.2s ease-in-out;
+        ">Anuluj</button>
+
+        <button id="sendBtn" style="
+          float: right;
+          height: 35px;
+          width: 48%;
+          background-color: #000;
+          border: none;
+          color: white;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin-top: 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background 0.2s ease-in-out;
+        ">Wyślij</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #sendBtn:hover { background-color: #222; }
+    #cancelBtn:hover { background-color: #666; }
+    #emailInput:focus {
+      border-color: #000;
+      box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    }
+  </style>
+`;
+document.body.appendChild(modal);
+
+const overlay = document.getElementById("emailModalOverlay");
+const emailInput = document.getElementById("emailInput");
+const cancelBtn = document.getElementById("cancelBtn");
+const sendBtn = document.getElementById("sendBtn");
+const captchaContainer = document.getElementById("captchaContainer");
+
+cancelBtn.onclick = () => overlay.remove();
+
+// 🔹 Funkcja do załadowania skryptu reCAPTCHA (jeśli jeszcze nie ma)
+const loadRecaptcha = () =>
+  new Promise((resolve) => {
+    if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
+      return resolve(window.grecaptcha);
+    }
+
+    const checkReady = () => {
+      if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
+        resolve(window.grecaptcha);
+      } else {
+        setTimeout(checkReady, 100);
+      }
+    };
+
+    if (!document.querySelector('script[src*="recaptcha/api.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      script.onload = checkReady;
+      document.head.appendChild(script);
+    } else {
+      checkReady();
+    }
+  });
+
+// 🔹 Renderuj captchę po załadowaniu skryptu
+const grecaptchaInstance = await loadRecaptcha();
+const widgetId = grecaptchaInstance.render(captchaContainer, {
+  sitekey: "6LdfPvQrAAAAAJdu2RPrzKknsN1KrjE0kMx2S1va",
+});
+
+// 🔹 Obsługa wysyłki
+sendBtn.onclick = async () => {
+  const email = emailInput.value.trim();
+  const captchaResponse = grecaptcha.getResponse(widgetId);
+
+  if (!email) {
+    alert("Podaj adres e-mail.");
+    return;
+  }
+  if (!captchaResponse) {
+    alert("Potwierdź, że nie jesteś robotem 😊");
+    return;
+  }
+
+  const payload = {
+    messages: d,
+    email: email,
+    recaptcha: captchaResponse,
+  };
+
+  try {
+    const response = await fetch(
+      "https://zx3ggv4fn2ruq4qi.cludo.pl/InternalWS/zx3ggv/ChatNLPApi/sendPdf",
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Błąd API: " + response.status);
+    }
+
+    alert("✅ PDF został wysłany na Twój adres e-mail: " + email);
+    grecaptcha.reset(widgetId);
+    overlay.remove();
+  } catch (err) {
+    console.error("Błąd podczas wysyłki PDF:", err);
+    alert("❌ Wystąpił błąd podczas wysyłki PDF. Spróbuj ponownie.");
+  }
+};
+
+		
+		//modal end
+		/*
+		 if (!email) {
+				return;
+			}
+			
+		const payload = {
+			messages: d, // d powinno być tablicą wiadomości
+			email: email
+		};
+         try {
+        const response = await fetch(
+            "https://zx3ggv4fn2ruq4qi.cludo.pl/InternalWS/zx3ggv/ChatNLPApi/sendPdf",
+            {
+                method: "POST",
+                headers: {
+                    "accept": "",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Błąd API: " + response.status);
+        }
+
+        // Sukces – ładny komunikat
+        alert("✅ PDF został wysłany na Twój adres e-mail: " + email);
+		
+
+    } catch (err) {
+        console.error("Błąd podczas wysyłki PDF:", err);
+        alert("❌ Wystąpił błąd podczas wysyłki PDF. Spróbuj ponownie.");
+    }
+	*/
+    }
+	if(event.data?.action === "cFinish"){
+		document.querySelector('.menu-restart').classList.remove("disabled");
+		document.querySelector('.menu-close').classList.add("disabled");
+		document.querySelector('.menu-main').classList.add("disabled");
+
+	}
+	if(event.data?.action === "cStart"){
+		document.querySelector('.menu-restart').classList.add("disabled");
+		document.querySelector('.menu-close').classList.add("disabled");
+		document.querySelector('.menu-main').classList.add("disabled");
+		document.querySelector('.menu-download').classList.add("disabled");
+		document.querySelector('.menu-mail').classList.add("disabled");
+	}
+	if(event.data?.action === "cStartInit"){
+		document.querySelector('.menu-close').classList.remove("disabled");
+		document.querySelector('.menu-main').classList.remove("disabled");
+		document.querySelector('.menu-download').classList.remove("disabled");
+		document.querySelector('.menu-mail').classList.remove("disabled");
+	}
+	if(event.data?.action === 'cGetUserData'){
+		console.log('cGetUserData');
+		var data = cGetCookie("snrs_cludo_data");
+		const iframe = document.getElementById('body-frame');
+		const meta = document.querySelector('meta[property="product:retailer_part_no"]');
+		const productId = meta ? meta.content : null;
+		const cURL = document.URL;
+        iframe.contentWindow.postMessage({action:"cSendUserData", data: data, productId:productId, url: cURL}, '*', );
+	}
+	if(event.data?.action === 'cGetCookie'){
+		let cookieName = event.data?.name;
+		let cookieValue = cGetCookie(cookieName);
+
+		const iframe = document.getElementById('body-frame');
+        iframe.contentWindow.postMessage({action:"cSendCookieData", data: cookieValue}, '*', );
+	}
+	if(event.data?.action === 'cSaveCookie'){
+		document.cookie = event.data?.cookie
+	}
+	if(event.data?.action === 'cOpenUrl'){
+		window.location.href = event.data?.url;
+		if(event.data?.url.includes('#')){
+			window.location.reload();
+		}
+	}
+});
+
+function timeToMinutes(time) {
+  if (!time) return null;
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function isShopOpen(config, date = new Date()) {
+  const day = date.getDay();
+  const currentMinutes = date.getHours() * 60 + date.getMinutes();
+
+  for (const key in config) {
+    const { days, open, close } = config[key];
+
+    if (!days.includes(day) || open === null) continue;
+
+    const openMinutes = timeToMinutes(open);
+    const closeMinutes = timeToMinutes(close);
+
+    return currentMinutes >= openMinutes && currentMinutes < closeMinutes;
+  }
+
+  return false;
+}

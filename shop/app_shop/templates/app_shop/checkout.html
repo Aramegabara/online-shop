@@ -1,54 +1,155 @@
 {% extends 'app_shop/base.html' %}
 
 {% block content %}
-<h3 class="text-center mt-5 mb-5">Your order</h3>
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">Title</th>
-        <th scope="col">image</th>
-        <th scope="col">Price</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Sum price</th>
 
-    </tr>
-    </thead>
-    <tbody>
+<style>
+    .checkout-container {
+        max-width: 900px;
+        margin: 30px auto 80px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+        padding: 30px;
+    }
+    .order-section {
+        margin-bottom: 40px;
+    }
+    .section-title {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: 600;
+        border-bottom: 2px solid #198754;
+        padding-bottom: 10px;
+    }
+    .order-form-container {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+    }
+    .form-group-order {
+        margin-bottom: 20px;
+    }
+    .form-group-order label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .form-group-order input,
+    .form-group-order select,
+    .form-group-order textarea {
+        width: 100%;
+        padding: 10px 15px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+    .form-group-order input:focus,
+    .form-group-order select:focus,
+    .form-group-order textarea:focus {
+        outline: none;
+        border-color: #198754;
+    }
+    .order-summary-row {
+        background: #e7f5ec;
+        font-weight: bold;
+    }
+    .btn-order {
+        width: 100%;
+        padding: 15px;
+        background: #198754;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 20px;
+    }
+    .btn-order:hover {
+        background: #157347;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+    }
+</style>
 
-    {% for item in cart.product.all %}
+<div class="checkout-container">
+    <div class="order-section">
+        <h3 class="section-title">Your Order</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Image</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Sum price</th>
+            </tr>
+            </thead>
+            <tbody>
 
-    <tr>
-        <th scope="row">{{ item.content_object.title }}</th>
-        <td class="w-25 p-3"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
-        <td>{{ item.content_object.price }} zl</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.sum_price }}</td>
-    </tr>
+            {% for item in cart.product.all %}
+            <tr>
+                <th scope="row">{{ item.content_object.title }}</th>
+                <td class="w-25 p-3"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
+                <td>{{ item.content_object.price }} zł</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.sum_price }}</td>
+            </tr>
+            {% endfor %}
 
-    {% endfor %}
+            <tr class="order-summary-row">
+                <td colspan="2"></td>
+                <td>SUMMARY</td>
+                <td></td>
+                <td><strong>{{ cart.sum_price }} zł.</strong></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <tr>
-        <td colspan="2"></td>
-        <td>SUMMARY</td>
-        <!--      <td>{{ cart.total_products }}</td>-->
-        <td><strong>{{ cart.sum_price }} zl.</strong></td>
-    </tr>
-    </tbody>
-</table>
-<h3 class="text-center mt-5 mb-5">Make order</h3>
-<form action="{% url 'make_order' %}" method="POST">
-    <table>
-        {% csrf_token %}
-        <th>{{ form }}</th>
-        <td></td>
-        <td>
-            <button type="submit" class="btn btn-success mo-3"
-                    style="width: 100%; color: honeydew; text-shadow: 1px 1px #121212">ORDER IT
-            </button>
-        </td>
-    </table>
-</form>
-<hr>
-
+    <div class="order-form-container">
+        <h3 class="section-title">Make order</h3>
+        <form action="{% url 'make_order' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group-order">
+                <label>{{ form.first_name.label }}</label>
+                {{ form.first_name }}
+            </div>
+            <div class="form-group-order">
+                <label>{{ form.last_name.label }}</label>
+                {{ form.last_name }}
+            </div>
+            <div class="form-group-order">
+                <label>{{ form.phone.label }}</label>
+                {{ form.phone }}
+            </div>
+            <div class="form-group-order">
+                <label>{{ form.address.label }}</label>
+                {{ form.address }}
+            </div>
+            <div class="form-group-order">
+                <label>{{ form.buying_type.label }}</label>
+                {{ form.buying_type }}
+            </div>
+            <div class="form-group-order">
+                <label>{{ form.order_date.label }}</label>
+                {{ form.order_date }}
+            </div>
+            <div class="form-group-order">
+                <label>{{ form.comment.label }}</label>
+                {{ form.comment }}
+            </div>
+            <button type="submit" class="btn-order">ORDER IT</button>
+        </form>
+    </div>
+</div>
 
 {% endblock content %}

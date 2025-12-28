@@ -1,47 +1,104 @@
 {% extends 'app_shop/base.html' %}
 
-
 {% block content %}
-<form action="" method="POST">
-    {% csrf_token %}
-    <div class="row" style="margin-bottom: 300px; margin-top:180px">
-        <h1>Registration </h1>
-        <th>
-            {{ form.username.label }}
+
+<style>
+    .auth-container {
+        max-width: 500px;
+        margin: 50px auto 100px;
+        padding: 40px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+    }
+    .auth-container h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 28px;
+        font-weight: 600;
+    }
+    .form-group-auth {
+        margin-bottom: 20px;
+    }
+    .form-group-auth label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .form-group-auth input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.3s;
+    }
+    .form-group-auth input:focus {
+        outline: none;
+        border-color: #198754;
+    }
+    .btn-auth {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #198754;
+        color: white;
+    }
+    .btn-auth:hover {
+        background: #157347;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="auth-container">
+    <h1>Registration</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="form-group-auth">
+            <label>{{ form.username.label }}</label>
             {{ form.username }}
-        </th>
-        <th>
-            {{ form.first_name.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.first_name.label }}</label>
             {{ form.first_name }}
-        </th>
-        <th>
-            {{ form.last_name.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.last_name.label }}</label>
             {{ form.last_name }}
-        </th>
-        <th>
-            {{ form.email.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.email.label }}</label>
             {{ form.email }}
-        </th>
-        <th>
-            {{ form.phone.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.phone.label }}</label>
             {{ form.phone }}
-        </th>
-        <th>
-            {{ form.address.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.address.label }}</label>
             {{ form.address }}
-        </th>
-        <th>
-            {{ form.password.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.password.label }}</label>
             {{ form.password }}
-        </th>
-        <th>
-            {{ form.confirm_password.label }}
+        </div>
+        <div class="form-group-auth">
+            <label>{{ form.confirm_password.label }}</label>
             {{ form.confirm_password }}
-        </th>
-        <th>
-            <button class="btn btn-success" type="submit">Create accound</button>
-        </th>
-    </div>
-</form>
+        </div>
+        <button class="btn-auth" type="submit">Create account</button>
+    </form>
+</div>
+
 {% endblock %}
 

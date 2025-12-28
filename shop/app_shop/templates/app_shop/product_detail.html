@@ -2,6 +2,13 @@
 
 {% block content %}
 
+<style>
+    .product-detail-container {
+        margin-bottom: 100px;
+    }
+</style>
+
+<div class="product-detail-container">
 <nav aria-label="breadcrumb" class="mt-3">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'base' %}">Home</a></li>
@@ -38,6 +45,7 @@
     {% include 'app_shop/smartphone_specification.html' %}
     {% endif %}
 
+</div>
 </div>
 
 {% endblock content %}
