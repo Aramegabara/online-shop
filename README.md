@@ -8,4 +8,4 @@
   <li>Zarejestrować zamówienie.</li>
 </ul>
 <hr>
-<h4>Project : <a href='http://heraskov.pythonanywhere.com/'>Online-Store</a></h4>
+<h4>Project : <a href='https://aheraskov.pythonanywhere.com/'>Online-Store</a></h4>
